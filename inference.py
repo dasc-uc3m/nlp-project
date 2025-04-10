@@ -12,7 +12,7 @@ def main():
     args = parse_args()
     headers = {"Content-Type": "application/json"}
     data = {"prompt": args.prompt}
-    response = requests.post("http://localhost:5000/generate", headers=headers, json=data)
+    response = requests.post("http://localhost:5001/generate", headers=headers, json=data)
     answer = response.json()["response"]
     print(html.unescape(answer))
 
