@@ -3,7 +3,6 @@ sys.path.append(".")
 import os
 from flask import Flask, request, jsonify
 from src.model import CustomLLM
-from src.db import vector_store
 
 app = Flask(__name__)
 llm = CustomLLM(
@@ -12,13 +11,6 @@ llm = CustomLLM(
     int(os.getenv("MAX_TOKENS", 512)),
     float(os.getenv("TEMPERATURE", 0.7))
 )
-
-
-def retrieve_context(query, k=3):
-    docs = vector_store.similarity_search(query, k=k) # top 3 docs 
-    context = "\n---\n".join([doc.page_content for doc in docs])
-    return context 
-
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -30,19 +22,23 @@ def generate():
     
     # Obtener el prompt del request
     data = request.json
-    if not data or 'prompt' not in data:
-        return jsonify({"error": "No prompt provided"}), 400
+    # if not data or 'prompt' not in data:
+    #     return jsonify({"error": "No prompt provided"}), 400
     
-    prompt = data['prompt']
+    prompt = data["prompt"]
     
     try:
         
-        context = retrieve_context(prompt, k = 3)
+        # context = retrieve_context(prompt, k = 3)
         
-        rag_prompt = f"Context:\n{context}\n\nQuestion:\n{prompt}\n\nAnswer:"
+        # rag_prompt = f"Context:\n{context}\n\nQuestion:\n{prompt}\n\nAnswer:"
         
         # Generar respuesta
-        response = llm.send_message(rag_prompt)
+        messages = [
+            {"role": "system", "content": "You are a helpful ChatBot assistant that provide information given certain context."},
+            {"role": "user", "content": prompt}
+        ]
+        response = llm.send_message(messages)
         
         
         return jsonify({"response": response})

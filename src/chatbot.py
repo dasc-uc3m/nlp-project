@@ -1,22 +1,83 @@
+import sys
+sys.path.append(".")
+
 import requests
 import html
+from typing import Dict
+from src.db import VectorDB
 
-from langchain_core.language_models import LLM
-
-class LocalLLM(LLM):
+class LocalLLM:
     def __init__(self):
-        self.url = "http://localhost:5000"
-        self.headers = {"Content-Type": "application/json"}
-    
-    def _call(self, data) -> str:
+        self.url: str = "http://localhost:5001"
+        self.headers: Dict[str, str] = {"Content-Type": "application/json"}
+
+    def __call__(self, data, stop=None) -> str:
         try:
-            response = requests.post(self.url+"/generate", headers=self.headers, json=data)
+            response = requests.post(self.url+"/generate", headers=self.headers, json={"prompt": data})
             response.raise_for_status()
         except requests.HTTPError as e:
             print(e)
         answer = response.json()["response"]
         return html.unescape(answer)
 
-    @property
-    def _llm_type(self) -> str:
-        return "local-llm"
+class Memory:
+    def __init__(self):
+        self._memory = []
+    
+    def update_memory(self, human_msg: str, ai_msg: str):
+        self._memory.append({"Human": human_msg})
+        self._memory.append({"AI": ai_msg})
+
+    def reset_memory(self):
+        self._memory = []
+
+    def compile(self):
+        return "\n".join(f"{entity}: {message}" for message_dict in self._memory for entity, message in message_dict.items())
+
+
+class ChatBot:
+    def __init__(self):
+        self.llm = LocalLLM()
+        self.memory = Memory()
+        self.default_prompt = (
+            f"The following is a conversation between a user and an assistant.\n"
+            "{history}\n"
+            "To follow this conversation you must take into account the following context:\n{context}\n"
+            "Human: {input}\nAI:"
+        )
+    
+    def initialize_context(self, context: str):
+        self.context = context
+
+    def remove_context(self):
+        del self.context
+
+    def infer(self, message: str):
+        if not hasattr(self, "context"):
+            print("WARNING: You are asking the LLM but it hasn't got its context loaded.")
+            prompt = self.default_prompt.format(context="", input=message, history=self.memory.compile())
+        else:
+            prompt = self.default_prompt.format(context=self.context, input=message, history=self.memory.compile())
+        
+        answer = self.llm(prompt)
+        self.memory.update_memory(human_msg=message, ai_msg=answer)
+
+        return answer
+
+    def search_for_context(self, query, vector_db: VectorDB, k=3):
+        context = vector_db.retrieve_context(query, k=k)
+        if len(context) > 0:
+            self.initialize_context(context=context)
+            message = "Succesfully loaded context."
+        else:
+            message = "No context found in the Database."
+        print(message)
+        return message
+        
+
+    def __call__(self, message: str):
+        self.infer(message=message)
+
+if __name__=="__main__":
+    cb = ChatBot()
+    cb.infer("Hola")
