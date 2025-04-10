@@ -22,12 +22,9 @@ class CustomLLM():
         self.max_tokens = max_tokens
         self.temperature = temperature
 
-    def send_message(self, prompt):
-        messages = [
-            {"role": "user", "content": prompt}
-        ]
+    def send_message(self, data):
         text = self.tokenizer.apply_chat_template(
-            messages,
+            data,
             tokenize=False,
             add_generation_prompt=True
         )
