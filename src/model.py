@@ -10,7 +10,7 @@ class CustomLLM():
             temperature=0.7
     ) -> None:
         self.model_name = model_name
-        self.device = device if device == "cuda" and torch.cuda.is_available() else "cpu"
+        self.device = device if device == "mps" and torch.cuda.is_available() else "cpu"
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             torch_dtype = "auto",

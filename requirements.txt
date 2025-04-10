@@ -1,1 +1,2 @@
 requests
+langchain==0.3.23

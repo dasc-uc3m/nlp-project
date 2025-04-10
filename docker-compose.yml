@@ -2,16 +2,18 @@ services:
   llm-service:
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000"
+    platform: linux/arm64
     environment:
       - MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
-      - DEVICE=cuda
+      - DEVICE=mps
       - MAX_TOKENS=512
       - TEMPERATURE=0.7
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
