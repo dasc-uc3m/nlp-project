@@ -40,9 +40,10 @@ class ChatBot:
         self.llm = LocalLLM()
         self.memory = Memory()
         self.default_prompt = (
-            f"The following is a conversation between a user and an assistant.\n"
-            "{history}\n"
-            "To follow this conversation you must take into account the following context:\n{context}\n"
+            "You will be asked to take a conversation based on the following context:\n{context}\n"
+            "--END OF CONTEXT--\n\n"
+            "The following is the conversation that has been taken between a user and an AI assistant.\n"
+            "{history}\n\n"
             "Human: {input}\nAI:"
         )
     

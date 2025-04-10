@@ -18,7 +18,7 @@ def search_for_documents():
     data = request.data.decode("utf-8")
 
     result = chatbot.search_for_context(data, vector_db)
-    return result
+    return result+"\n"
 
 @app.route("/upload_documents", methods=["POST"])
 def upload_documents():
