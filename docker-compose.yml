@@ -1,5 +1,6 @@
 services:
   llm-service:
+    container_name: llm-service
     build: .
     ports:
       - "5001:5000"
