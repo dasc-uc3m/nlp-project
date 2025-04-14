@@ -25,21 +25,10 @@ def generate():
     # if not data or 'prompt' not in data:
     #     return jsonify({"error": "No prompt provided"}), 400
     
-    prompt = data["prompt"]
+    messages = data["messages"]
     
     try:
-        
-        # context = retrieve_context(prompt, k = 3)
-        
-        # rag_prompt = f"Context:\n{context}\n\nQuestion:\n{prompt}\n\nAnswer:"
-        
-        # Generar respuesta
-        messages = [
-            {"role": "system", "content": "You are a helpful ChatBot assistant that provide information given certain context."},
-            {"role": "user", "content": prompt}
-        ]
         response = llm.send_message(messages)
-        
         
         return jsonify({"response": response})
     
