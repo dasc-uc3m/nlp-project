@@ -4,7 +4,7 @@ services:
     build: .
     ports:
       - "5001:5000"
-    platform: linux/arm64
+    # platform: linux/arm64
     environment:
       - MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
       - DEVICE=cuda
