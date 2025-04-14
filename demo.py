@@ -32,8 +32,8 @@ def main():
     chatbot = ChatBot()
     vector_db = VectorDB()
 
-    vector_db.load_document("data/hypertension.pdf")
-    chatbot.search_for_context("Documents related with hypertension issues", vector_db, k=3)
+    vector_db.upload_document("data/hypertension.pdf")
+    chatbot.retrieve_context_from_db("Documents related with hypertension issues", vector_db, k=3)
 
     answer = chatbot.infer("Tell me something about the provided context.")
     print(answer)
