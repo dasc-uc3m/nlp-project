@@ -1,13 +1,16 @@
 services:
   llm-service:
+    container_name: llm-service
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5000"
+    platform: linux/arm64
     environment:
       - MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
       - DEVICE=cuda
       - MAX_TOKENS=512
       - TEMPERATURE=0.7
+      
     deploy:
       resources:
         reservations:

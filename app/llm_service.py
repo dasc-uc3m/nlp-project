@@ -1,9 +1,7 @@
 import sys
 sys.path.append(".")
 import os
-
 from flask import Flask, request, jsonify
-
 from src.model import CustomLLM
 
 app = Flask(__name__)
@@ -24,15 +22,27 @@ def generate():
     
     # Obtener el prompt del request
     data = request.json
-    if not data or 'prompt' not in data:
-        return jsonify({"error": "No prompt provided"}), 400
+    # if not data or 'prompt' not in data:
+    #     return jsonify({"error": "No prompt provided"}), 400
     
-    prompt = data['prompt']
+    prompt = data["prompt"]
     
     try:
+        
+        # context = retrieve_context(prompt, k = 3)
+        
+        # rag_prompt = f"Context:\n{context}\n\nQuestion:\n{prompt}\n\nAnswer:"
+        
         # Generar respuesta
-        response = llm.send_message(prompt)
+        messages = [
+            {"role": "system", "content": "You are a helpful ChatBot assistant that provide information given certain context."},
+            {"role": "user", "content": prompt}
+        ]
+        response = llm.send_message(messages)
+        
+        
         return jsonify({"response": response})
+    
     except Exception as e:
         return jsonify({"error": str(e),
                         "data": data,
