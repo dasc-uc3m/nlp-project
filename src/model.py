@@ -1,5 +1,4 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
 
 class CustomLLM():
     def __init__(

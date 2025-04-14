@@ -35,9 +35,10 @@ def main():
     vector_db.load_document("data/hypertension.pdf")
     chatbot.search_for_context("Documents related with hypertension issues", vector_db, k=3)
 
-    answer = chatbot.infer("By who is written the provided document?")
+    answer = chatbot.infer("Tell me something about the provided context.")
     print(answer)
-
+    answer = chatbot.infer("What did you say in the previoius answer.")
+    print(answer)
 
 if __name__ == "__main__":
     initialize_app()

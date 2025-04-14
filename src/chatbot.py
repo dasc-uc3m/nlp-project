@@ -55,8 +55,9 @@ class ChatBot:
 
     def infer(self, message: str):
         if not hasattr(self, "context"):
-            print("WARNING: You are asking the LLM but it hasn't got its context loaded.")
-            prompt = self.default_prompt.format(context="", input=message, history=self.memory.compile())
+            print("ERROR: You are asking the LLM but it hasn't got its context loaded.")
+            return ""
+            # prompt = self.default_prompt.format(context="", input=message, history=self.memory.compile())
         else:
             prompt = self.default_prompt.format(context=self.context, input=message, history=self.memory.compile())
         
