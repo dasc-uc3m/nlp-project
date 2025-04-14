@@ -13,7 +13,7 @@ class VectorDB:
         self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     
     # TODO: hacer función que carga directamente base de datos en vez de documento 1 a 1 y persistir los embeddings en algún sitio.
-    def load_document(self, path_to_single_document):
+    def upload_document(self, path_to_single_document):
         loader = PyPDFLoader(path_to_single_document)
         documents = loader.load()
         docs = self.text_splitter.split_documents(documents)

@@ -17,7 +17,7 @@ def search_for_documents():
 
     data = request.data.decode("utf-8")
 
-    result = chatbot.search_for_context(data, vector_db)
+    result = chatbot.retrieve_context_from_db(data, vector_db)
     return result+"\n"
 
 @app.route("/upload_documents", methods=["POST"])
@@ -26,7 +26,7 @@ def upload_documents():
 
     data = request.data.decode("utf-8")
 
-    vector_db.load_document(data)
+    vector_db.upload_document(data)
     return "Document loaded.\n"
 
 @app.route("/infer", methods=["POST"])

@@ -66,7 +66,7 @@ class ChatBot:
 
         return answer
 
-    def search_for_context(self, query, vector_db: VectorDB, k=3):
+    def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
         context = vector_db.retrieve_context(query, k=k)
         if len(context) > 0:
             self.initialize_context(context=context)

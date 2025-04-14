@@ -2,7 +2,7 @@ import sys
 sys.path.append(".")
 import os
 from flask import Flask, request, jsonify
-from src.model import CustomLLM
+from llm.model import CustomLLM
 
 app = Flask(__name__)
 llm = CustomLLM(
