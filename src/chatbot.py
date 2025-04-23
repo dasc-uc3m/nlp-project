@@ -6,19 +6,7 @@ import html
 from typing import Dict
 from src.db import VectorDB
 
-class LocalLLM:
-    def __init__(self):
-        self.url: str = "http://localhost:5001"
-        self.headers: Dict[str, str] = {"Content-Type": "application/json"}
-
-    def __call__(self, data, stop=None) -> str:
-        try:
-            response = requests.post(self.url+"/generate", headers=self.headers, json={"messages": data})
-            response.raise_for_status()
-        except requests.HTTPError as e:
-            print(e)
-        answer = response.json()["response"]
-        return html.unescape(answer)
+from llm.model import LocalLLM
 
 class Memory:
     def __init__(self):
