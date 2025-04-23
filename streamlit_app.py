@@ -43,7 +43,7 @@ st.markdown("<h1 class='main-header'>🤰 Midwife Chatbot</h1>", unsafe_allow_ht
 if "messages" not in st.session_state:
     st.session_state.messages = []
     st.markdown("""
-        <div style='text-align: center; padding: 20px; background-color: #f0f8ff; border-radius: 10px; margin-bottom: 20px;'>
+        
             <h3>Welcome to the Midwife Chatbot! </h3>
             <p>I'm here to help answer your questions about pregnancy and childbirth.</p>
         </div>
@@ -57,6 +57,17 @@ with chat_container:
     for message in st.session_state.messages:
         with st.chat_message(message["role"], avatar="🤖" if message["role"] == "assistant" else "👤"):
             st.markdown(message["content"])
+            # Display sources if available
+            if "sources" in message:
+                with st.expander("View Sources"):
+                    for idx, source in enumerate(message["sources"], 1):
+                        st.markdown(f"""
+                        **Source {idx}:**  
+                        File: `{source['source']}`  
+                        Page: {source['page']}  
+                        Preview: _{source['content']}_
+                        ---
+                        """)
 
     # Accept user input with a more prominent chat input
     if prompt := st.chat_input("Type your question here..."):
@@ -77,11 +88,26 @@ with chat_container:
                 # Process the response
                 api_response = response.json()
                 assistant_message = api_response.get("response", "Error: No response received.")
+                sources = api_response.get("sources", [])
 
                 # Add assistant response to history and display
-                st.session_state.messages.append({"role": "assistant", "content": assistant_message})
+                st.session_state.messages.append({
+                    "role": "assistant", 
+                    "content": assistant_message,
+                    "sources": sources  # Store sources in message history
+                })
                 with st.chat_message("assistant", avatar="🤖"):
                     st.markdown(assistant_message)
+                    if sources:
+                        with st.expander("View Sources"):
+                            for idx, source in enumerate(sources, 1):
+                                st.markdown(f"""
+                                **Source {idx}:**  
+                                File: `{source['source']}`  
+                                Page: {source['page']}  
+                                Preview: _{source['content']}_
+                                ---
+                                """)
 
         except requests.exceptions.ConnectionError:
             st.error("Connection Error: Could not connect to the backend service. Please make sure the Docker container is running.")
@@ -99,6 +125,6 @@ with chat_container:
 # Add a footer
 st.markdown("""
     <div style='text-align: center; padding: 20px; color: #666; font-size: 0.8em; position: fixed; bottom: 0; width: 70%; background-color: white;'>
-        Made by Carlos, Duarte, Sandra and Alex 
+        Made by Carlos, Duarte, Sandra and Alex - Universidad Carlos III de Madrid  
     </div>
 """, unsafe_allow_html=True)

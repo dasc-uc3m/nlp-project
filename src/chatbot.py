@@ -107,29 +107,32 @@ class ChatBot:
 
     def infer(self, message: str):
         if not hasattr(self, "context"):
-            # Instead of returning empty string, we'll just use the message without context
             prompt = [
                 {"role": "system", "content": self.system_prompt},
                 *self.memory.history,
                 {"role": "user", "content": message}
             ]
+            sources = []  # No sources if no context
         else:
             prompt = self.build_prompt(context=self.context, user_query=message)
+            sources = self.current_sources  # Store sources from last context retrieval
         
         answer = self.llm(prompt)
         self.memory.update_memory(human_msg=message, ai_msg=answer)
         
-        return answer
+        return answer, sources
 
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
-        context = vector_db.retrieve_context(query, k=k)
+        context, sources = vector_db.retrieve_context(query, k=k)
         if len(context) > 0:
             self.initialize_context(context=context)
-            message = "Succesfully loaded context."
+            self.current_sources = sources  # Store sources for later use
+            message = "Successfully loaded context."
         else:
             message = "No context found in the Database."
+            self.current_sources = []
         print(message)
-        return message
+        return message, sources
         
 
     def __call__(self, message: str):
