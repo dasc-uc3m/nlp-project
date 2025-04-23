@@ -1,0 +1,5 @@
+docker compose up --build
+python app/chatbot_app.py
+streamlit run streamlit_app.py
+
+all in different terminals - have to wait for it to say the container is running 

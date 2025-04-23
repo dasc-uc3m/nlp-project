@@ -106,17 +106,19 @@ class ChatBot:
         return messages
 
     def infer(self, message: str):
-        # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
         if not hasattr(self, "context"):
-            print("ERROR: You are asking the LLM but it hasn't got its context loaded.")
-            return ""
-            # prompt = self.default_prompt.format(context="", input=message, history=self.memory.compile())
+            # Instead of returning empty string, we'll just use the message without context
+            prompt = [
+                {"role": "system", "content": self.system_prompt},
+                *self.memory.history,
+                {"role": "user", "content": message}
+            ]
         else:
             prompt = self.build_prompt(context=self.context, user_query=message)
         
         answer = self.llm(prompt)
         self.memory.update_memory(human_msg=message, ai_msg=answer)
-
+        
         return answer
 
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):

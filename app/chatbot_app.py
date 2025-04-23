@@ -32,11 +32,28 @@ def upload_documents():
 @app.route("/infer", methods=["POST"])
 def infer_with_chatbot():
     global chatbot
-
-    data = request.data.decode("utf-8")
-
-    answer = chatbot.infer(data)
-
-    return jsonify({"response": answer})
+    
+    try:
+        payload = request.get_json()
+        messages = payload["messages"]
+        latest_message = messages[-1]["content"]
+        
+        # Reset chatbot memory to sync with frontend
+        chatbot.memory.reset_memory()
+        
+        # Rebuild memory from frontend history (excluding the last message)
+        for msg in messages[:-1]:
+            if msg["role"] in ["user", "assistant"]:
+                if msg["role"] == "user":
+                    user_msg = msg["content"]
+                else:
+                    chatbot.memory.update_memory(user_msg, msg["content"])
+        
+        answer = chatbot.infer(latest_message)
+        return jsonify({"response": answer})
+        
+    except Exception as e:
+        print(f"Error in infer endpoint: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 app.run(host="0.0.0.0", port = int(os.environ.get("PORT", "5002")), debug=True)
