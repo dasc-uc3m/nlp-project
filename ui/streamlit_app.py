@@ -1,18 +1,24 @@
 import streamlit as st
 import requests
 import json # Ensure json is imported
+from sidebar import sidebar 
 
 # API endpoint of the Flask service running in Docker
 # It's accessible via localhost on the host port mapped in docker-compose (5001)
 FLASK_API_URL = "http://localhost:5002/infer"
 
+
+
 # Configure the page with a custom theme and layout
 st.set_page_config(
-    page_title="Midwife Chatbot",
+    page_title="MidwifeGPT",
     page_icon="🤰",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+sidebar()
+
 
 # Custom CSS to improve the appearance
 st.markdown("""
@@ -37,14 +43,14 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Main title with custom styling
-st.markdown("<h1 class='main-header'>🤰 Midwife Chatbot</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-header'>🤰 MidwifeGPT</h1>", unsafe_allow_html=True)
 
 # Add a welcoming message
 if "messages" not in st.session_state:
     st.session_state.messages = []
     st.markdown("""
         
-            <h3>Welcome to the Midwife Chatbot! </h3>
+            <h3>Welcome to MidwifeGPT! </h3>
             <p>I'm here to help answer your questions about pregnancy and childbirth.</p>
         </div>
     """, unsafe_allow_html=True)
@@ -89,6 +95,7 @@ with chat_container:
                 api_response = response.json()
                 assistant_message = api_response.get("response", "Error: No response received.")
                 sources = api_response.get("sources", [])
+                print(f"DEBUG - Received sources: {sources}")  # Add this line
 
                 # Add assistant response to history and display
                 st.session_state.messages.append({
@@ -122,9 +129,9 @@ with chat_container:
         except Exception as e:
             st.error(f"An unexpected error occurred: {e}")
 
-# Add a footer
-st.markdown("""
-    <div style='text-align: center; padding: 20px; color: #666; font-size: 0.8em; position: fixed; bottom: 0; width: 70%; background-color: white;'>
-        Made by Carlos, Duarte, Sandra and Alex - Universidad Carlos III de Madrid  
-    </div>
-""", unsafe_allow_html=True)
+# # Add a footer
+# st.markdown("""
+#     <div style='text-align: center; padding: 20px; color: #666; font-size: 0.8em; position: fixed; bottom: 0; width: 70%; background-color: white;'>
+#         Made by Carlos, Duarte, Sandra and Alex - Universidad Carlos III de Madrid  
+#     </div>
+# """, unsafe_allow_html=True)

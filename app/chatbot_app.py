@@ -14,12 +14,12 @@ import glob
 DOCUMENTS_DIR = "data"  
 DOCUMENT_EXTENSIONS = ["*.pdf"]  
 
-def load_initial_documents():
-    """Load all documents from the documents directory"""
-    documents = []
-    for ext in DOCUMENT_EXTENSIONS:
-        documents.extend(glob.glob(os.path.join(DOCUMENTS_DIR, ext)))
-    return documents
+# def load_initial_documents():
+#     """Load all documents from the documents directory"""
+#     documents = []
+#     for ext in DOCUMENT_EXTENSIONS:
+#         documents.extend(glob.glob(os.path.join(DOCUMENTS_DIR, ext)))
+#     return documents
 
 def create_app():
     """Application factory function"""
@@ -41,33 +41,41 @@ def create_app():
         print("Initial documents loaded successfully")
     else:
         print(f"Using existing collection with {collection_size} documents")
+        app.chatbot.retrieve_context_from_db("general context", app.vector_db)
 
-    # Define routes
-    @app.route("/refresh_documents", methods=["POST"])
-    def refresh_documents():
-        documents = glob.glob("data/*.pdf")
-        app.vector_db.upload_documents(documents)
-        return jsonify({"message": "Documents refreshed successfully"})
 
-    @app.route("/search_document", methods=["POST"])
-    def search_for_documents():
-        data = request.data.decode("utf-8")
-        result, sources = app.chatbot.retrieve_context_from_db(data, app.vector_db)
-        return jsonify({
-            "message": result,
-            "sources": sources
-        })
 
-    @app.route("/upload_documents", methods=["POST"])
-    def upload_documents():
-        try:
-            data = request.data.decode("utf-8")
-            app.vector_db.upload_document(data)
-            # Update chatbot context after new document
-            app.chatbot.retrieve_context_from_db("general context", app.vector_db)
-            return "Document loaded successfully\n"
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+    # Why this is here!!
+    #These are flask routes, they can be used later in our streamlit app to allow us to directly use this from the frontend. right now, we are not using this
+    # All backend logic is done in src inside wither chatbot or vector db. These are routes and we are only pointing the streamlit app to /infer on port 5002 
+    
+    
+    # # Define routes
+    # @app.route("/refresh_documents", methods=["POST"])
+    # def refresh_documents():
+    #     documents = glob.glob("data/*.pdf")
+    #     app.vector_db.upload_documents(documents)
+    #     return jsonify({"message": "Documents refreshed successfully"})
+
+    # @app.route("/search_document", methods=["POST"])
+    # def search_for_documents():
+    #     data = request.data.decode("utf-8")
+    #     result, sources = app.chatbot.retrieve_context_from_db(data, app.vector_db)
+    #     return jsonify({
+    #         "message": result,
+    #         "sources": sources
+    #     })
+
+    # @app.route("/upload_documents", methods=["POST"])
+    # def upload_documents():
+    #     try:
+    #         data = request.data.decode("utf-8")
+    #         app.vector_db.upload_document(data)
+    #         # Update chatbot context after new document
+    #         app.chatbot.retrieve_context_from_db("general context", app.vector_db)
+    #         return "Document loaded successfully\n"
+    #     except Exception as e:
+    #         return jsonify({"error": str(e)}), 500
 
     @app.route("/infer", methods=["POST"])
     def infer_with_chatbot():
@@ -87,7 +95,10 @@ def create_app():
                     else:
                         app.chatbot.memory.update_memory(user_msg, msg["content"])
             
+            app.chatbot.retrieve_context_from_db(latest_message, app.vector_db)
+            
             answer, sources = app.chatbot.infer(latest_message)
+            print(f"DEBUG - Sources from chatbot: {sources}")
             return jsonify({
                 "response": answer,
                 "sources": sources

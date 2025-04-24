@@ -1,5 +1,15 @@
-# ChatBot Project
-Duarte Moura, Alejandro Merino, Sandra Eizaguerri and Carlos Garijo.
+# The Midwife Chatbot 🤰
+Duarte Moura, Alejandro Merino, Sandra Eizaguerri and Carlos Garijo
+
+Universidad Carlos III de Madrid
+
+
+# Workflow 
+
+
+![Diagram](images/diagram.png)
+
+
 
 ## Installation
 1. Open an empty folder and run
