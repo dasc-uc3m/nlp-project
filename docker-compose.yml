@@ -7,15 +7,15 @@ services:
     # platform: linux/arm64
     environment:
       - MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
-      - DEVICE=cpu
+      - DEVICE=cuda
       - MAX_TOKENS=512
       - TEMPERATURE=0.7
       - HUGGINGFACE_TOKEN=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
       
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: 1
-    #           capabilities: [gpu]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
