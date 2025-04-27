@@ -9,3 +9,4 @@ pypdf
 huggingface_hub[hf_xet]
 flask
 transformers==4.50.3
+streamlit

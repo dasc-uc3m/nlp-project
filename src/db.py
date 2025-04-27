@@ -2,27 +2,75 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+import os
 
 class VectorDB:
-    def __init__(self):
+    def __init__(self, persist_directory = "db"):
+        self.persist_directory = persist_directory
         self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+        
+        os.makedirs(self.persist_directory, exist_ok = True )
+        
         self.vector_store = Chroma(
             collection_name="example_collection",
-            embedding_function=self.embeddings
+            embedding_function=self.embeddings, 
+            persist_directory = self.persist_directory
         )
         self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     
-    # TODO: hacer función que carga directamente base de datos en vez de documento 1 a 1 y persistir los embeddings en algún sitio.
     def upload_document(self, path_to_single_document):
-        loader = PyPDFLoader(path_to_single_document)
-        documents = loader.load()
+        loader = PyPDFLoader(path_to_single_document, mode="single")
+        try:
+            documents = loader.load()
+        except Exception as e:
+            print(f"Document: {path_to_single_document} couldn't be generated.\nError: {e}.\n\n")
+            return None
         docs = self.text_splitter.split_documents(documents)
 
-        # Store docs into Chroma
-        self.vector_store.add_documents(docs)
-        #vector_store.persist()
+        for idx, doc in enumerate(docs):
+            # We add the chunk id as part of the metadata to save which part of the document this chunk is.
+            doc.metadata["chunk_idx"] = idx
+        # Store docs into Chroma - persistence is automatic now
+        if len(docs) > 0:
+            self.vector_store.add_documents(docs)
+        
+    def upload_documents(self, documents_paths):
+        for path in os.listdir(documents_paths):
+            self.upload_document(os.path.join(documents_paths, path))
+            
+    def retrieve_context(self, query, k=3, chunk_window_size=4):
+        docs = self.vector_store.similarity_search(query, k=k)
+        joined_chunks = []
+        for doc in docs:
+            joined_chunks.append(self._search_nearby_chunks(doc, chunk_window_size))
+        context = "\n\n---\n\n".join(joined_chunks)
+        
+        # Extract source information from documents
+        sources = []
+        for doc in docs:
+            source_info = {
+                "source": doc.metadata.get("source", "Unknown"),
+                "page": doc.metadata.get("page", 1),
+                "content": doc.page_content[:200] + "..."  # Preview of content
+            }
+            sources.append(source_info)
+            
+        return context, sources
 
-    def retrieve_context(self, query, k=3):
-        docs = self.vector_store.similarity_search(query, k=k) # top 3 docs 
-        context = "\n---\n".join([doc.page_content for doc in docs])
-        return context 
+    def _search_nearby_chunks(self, doc, window):
+        source_doc = doc.metadata["source"]
+        chunk_idx = doc.metadata["chunk_idx"]
+        # Get every chunk of the same pdf document.
+        all_chunks = self.vector_store.get(where={"source": source_doc})
+
+        # Sort chunks by chunk_idx
+        all_chunks["documents"] = sorted(all_chunks["documents"], key=lambda chunk : float(chunk.metadata["chunk_idx"]))
+
+        nearby_chunks = []
+        target_indices = set(range(chunk_idx - window, chunk_idx + window + 1))
+        for doc in all_chunks["documents"]:
+            doc_meta = doc["metadata"]
+            if doc_meta["chunk_idx"] in target_indices:
+                nearby_chunks.append(doc["content"])
+
+        return "\n".join(nearby_chunks)

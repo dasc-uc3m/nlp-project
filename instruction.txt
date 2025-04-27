@@ -1,0 +1,47 @@
+docker compose up --build
+python app/chatbot_app.py
+streamlit run streamlit_app.py
+
+all in different terminals - have to wait for it to say the container is running 
+
+refresh the documents after making changes 
+
+curl -X POST http://localhost:5002/refresh_documents
+
+
+RAG Test Questions
+Document 1: NICE Antenatal Care Guidelines
+
+    What are the recommendations for initiating antenatal care and how should services accommodate different needs?
+
+    Explain how continuity of carer is emphasized in the NICE antenatal care guidelines.
+
+    List the routine antenatal appointments recommended for nulliparous and parous women.
+
+    What support is suggested for women who book late into their pregnancy?
+
+    What role do partners play in antenatal care according to the guideline, and how should healthcare environments reflect this?
+
+Document 2: WHO Breastfeeding Guidelines
+
+    What are the WHO’s recommendations on immediate postpartum breastfeeding support?
+
+    Describe the concept of ‘rooming-in’ and the evidence supporting it.
+
+    What are the three categories of recommendations used in this guideline?
+
+    Summarize the recommended practices for breastfeeding preterm infants who cannot nurse directly.
+
+    What policy and training considerations are advised to create an enabling environment for breastfeeding?
+
+Document 3: Midwifery Skills Guide
+
+    Describe the steps involved in conducting a thorough antenatal abdominal assessment.
+
+    What guidance is provided for conducting a postnatal examination of the uterus?
+
+    How should a midwife approach electronic fetal monitoring and interpret cardiotocography results?
+
+    Summarize the key points of immediate care of the newborn as outlined in the guide.
+
+    What are the outlined recommendations for advising pregnant women on vitamin supplementation?

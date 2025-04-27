@@ -2,6 +2,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import requests
 from typing import Dict
 import html
+import os
 
 class LocalLLM:
     def __init__(self):
@@ -30,10 +31,12 @@ class CustomLLM():
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             torch_dtype = "auto",
-            device_map = "auto"
+            device_map = "auto",
+            token = os.getenv("HUGGINGFACE_TOKEN", None)
         ).to(self.device)
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self.model_name
+            self.model_name,
+            token = os.getenv("HUGGINGFACE_TOKEN", None)
         )
         self.max_tokens = max_tokens
         self.temperature = temperature

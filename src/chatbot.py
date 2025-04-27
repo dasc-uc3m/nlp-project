@@ -9,9 +9,9 @@ from src.db import VectorDB
 from llm.model import LocalLLM
 
 class Memory:
-    def __init__(self):
+    def __init__(self, max_messages_count=10):
         self._memory = []
-    
+        self.max_messages_count = max_messages_count
     def update_memory(self, human_msg: str, ai_msg: str):
         self._memory.append(
             {"role": "user", "content": human_msg}
@@ -25,7 +25,7 @@ class Memory:
 
     @property
     def history(self):
-        return self._memory
+        return self._memory[-self.max_messages_count:]
 
 
 class ChatBot:
@@ -98,7 +98,7 @@ class ChatBot:
             },
 
             # We add the history of messages.
-            self.memory.history,
+            *self.memory.history,
 
             # Finally, we add the last given user query.
             {"role": "user", "content": user_query}
@@ -106,28 +106,33 @@ class ChatBot:
         return messages
 
     def infer(self, message: str):
-        # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
         if not hasattr(self, "context"):
-            print("ERROR: You are asking the LLM but it hasn't got its context loaded.")
-            return ""
-            # prompt = self.default_prompt.format(context="", input=message, history=self.memory.compile())
+            prompt = [
+                {"role": "system", "content": self.system_prompt},
+                *self.memory.history,
+                {"role": "user", "content": message}
+            ]
+            sources = []  # No sources if no context
         else:
             prompt = self.build_prompt(context=self.context, user_query=message)
+            sources = self.current_sources  # Store sources from last context retrieval
         
         answer = self.llm(prompt)
         self.memory.update_memory(human_msg=message, ai_msg=answer)
-
-        return answer
+        
+        return answer, sources
 
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
-        context = vector_db.retrieve_context(query, k=k)
+        context, sources = vector_db.retrieve_context(query, k=k)
         if len(context) > 0:
             self.initialize_context(context=context)
-            message = "Succesfully loaded context."
+            self.current_sources = sources  # Store sources for later use
+            message = "Successfully loaded context."
         else:
             message = "No context found in the Database."
+            self.current_sources = []
         print(message)
-        return message
+        return message, sources
         
 
     def __call__(self, message: str):
