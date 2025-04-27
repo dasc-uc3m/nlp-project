@@ -14,7 +14,7 @@ Universidad Carlos III de Madrid
 ## Installation
 1. Open an empty folder and run
 ```sh
-git@github.com:dasc-uc3m/nlp-project.git
+git clone git@github.com:dasc-uc3m/nlp-project.git .
 ```
 
 2. Create your virtual environment. I use virtualenv for this (in Linux) e.g.:
