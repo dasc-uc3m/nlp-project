@@ -9,9 +9,9 @@ from src.db import VectorDB
 from llm.model import LocalLLM
 
 class Memory:
-    def __init__(self):
+    def __init__(self, max_messages_count=10):
         self._memory = []
-    
+        self.max_messages_count = max_messages_count
     def update_memory(self, human_msg: str, ai_msg: str):
         self._memory.append(
             {"role": "user", "content": human_msg}
@@ -25,7 +25,7 @@ class Memory:
 
     @property
     def history(self):
-        return self._memory
+        return self._memory[-self.max_messages_count:]
 
 
 class ChatBot:
@@ -98,7 +98,7 @@ class ChatBot:
             },
 
             # We add the history of messages.
-            self.memory.history,
+            *self.memory.history,
 
             # Finally, we add the last given user query.
             {"role": "user", "content": user_query}
