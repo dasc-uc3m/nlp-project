@@ -163,6 +163,30 @@ class ChatBot:
         expanded_query = " ".join(expanded_words)
         return expanded_query
 
+    def expand_query(self, query: str) -> str:
+        """
+        Expand the user query by replacing words with their most common synonyms using WordNet.
+        """
+        words = query.split()
+        expanded_words = []
+
+        for word in words:
+            synonyms = wordnet.synsets(word)
+            if synonyms:
+                # Cogemos el primer sinónimo (el más habitual)
+                lemmas = synonyms[0].lemma_names()
+                if lemmas:
+                    # Usamos el primer lemma como expansión si es diferente
+                    synonym = lemmas[0].replace('_', ' ')
+                    expanded_words.append(synonym)
+                else:
+                    expanded_words.append(word)
+            else:
+                expanded_words.append(word)
+
+        expanded_query = " ".join(expanded_words)
+        return expanded_query
+
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
         context, sources = vector_db.retrieve_context(query, k=k)
         if len(context) > 0:
