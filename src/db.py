@@ -63,7 +63,7 @@ class VectorDB:
     def _search_nearby_chunks(self, doc, window):
         source_doc = doc.metadata["source"]
         # Get every chunk of the same pdf document.
-        response = self.vector_store.get(where={"source": source_doc})
+        all_chunks = self.vector_store.get(where={"source": source_doc})
 
         # Create a list of tuples (chunk_idx, content) for sorting
         chunk_data = []
