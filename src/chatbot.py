@@ -117,7 +117,7 @@ class ChatBot:
         ]
         return messages
 
-    def infer(self, message: str, expand: bool = True):
+    def infer(self, message: str, expand: bool = False):
         
         # To carry out the "Query expansion"
         if expand:

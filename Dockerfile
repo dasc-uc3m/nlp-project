@@ -9,8 +9,7 @@ RUN pip install --no-cache-dir transformers flask accelerate sentencepiece proto
 
 # Copiar el código de la aplicación
 
-COPY llm/llm_service.py /app/
 COPY llm /app/llm
 
 # Comando para ejecutar la aplicación
-CMD ["python", "llm_service.py"]
+CMD ["python", "llm/llm_service.py"]
