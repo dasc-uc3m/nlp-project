@@ -65,6 +65,21 @@ class VectorDB:
         # Get every chunk of the same pdf document.
         all_chunks = self.vector_store.get(where={"source": source_doc})
 
+        unique_chunks = []
+        unique_metadatas = []
+        seen_keys = set()
+
+        # For removing duplicates.
+        for i, content in enumerate(all_chunks["documents"]):
+            metadata = all_chunks["metadatas"][i]
+            key = (metadata.get("source"), metadata.get("chunk_idx"))
+            if key not in seen_keys:
+                seen_keys.add(key)
+                unique_chunks.append(content)
+                unique_metadatas.append(metadata)
+        all_chunks["documents"] = unique_chunks
+        all_chunks["metadatas"] = unique_metadatas
+        
         # Create a list of tuples (chunk_idx, content) for sorting
         chunk_data = []
         for i, content in enumerate(all_chunks["documents"]):
@@ -85,7 +100,13 @@ class VectorDB:
             if idx in target_indices:
                 nearby_chunks.append(content)
 
-        return "\n".join(nearby_chunks)
+        cleaned_chunks = [nearby_chunks[0]]  # Keep the first chunk as-is
+
+        for chunk in nearby_chunks[1:]:
+            cleaned_chunks.append(chunk[self.text_splitter._chunk_overlap:])  # Remove the 20-character overlap
+
+        joined_text = "".join(cleaned_chunks)
+        return joined_text
 
     def list_documents(self):
         """List all documents in the vector store"""
