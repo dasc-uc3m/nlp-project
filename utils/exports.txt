@@ -1,0 +1,8 @@
+export MODEL_NAME="google/gemma-2-2b-it"
+export DEVICE="mps"
+export MAX_TOKENS="512"
+export TEMPERATURE="0.7"
+export PORT="5001"
+
+
+export MODEL_NAME="Qwen/Qwen2.5-0.5B-Instruct"

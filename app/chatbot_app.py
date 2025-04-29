@@ -50,12 +50,17 @@ def create_app():
     # All backend logic is done in src inside wither chatbot or vector db. These are routes and we are only pointing the streamlit app to /infer on port 5002 
     
     
-    # # Define routes
     # @app.route("/refresh_documents", methods=["POST"])
     # def refresh_documents():
-    #     documents = glob.glob("data/*.pdf")
-    #     app.vector_db.upload_documents(documents)
-    #     return jsonify({"message": "Documents refreshed successfully"})
+    #     try:
+    #         documents = glob.glob("data/*.pdf")
+    #         for doc in documents:
+    #             app.vector_db.upload_document(doc)
+    #         # Update chatbot context after refresh
+    #         app.chatbot.retrieve_context_from_db("general context", app.vector_db)
+    #         return jsonify({"message": "Documents refreshed successfully"})
+    #     except Exception as e:
+    #         return jsonify({"error": str(e)}), 500
 
     # @app.route("/search_document", methods=["POST"])
     # def search_for_documents():
@@ -66,16 +71,38 @@ def create_app():
     #         "sources": sources
     #     })
 
-    # @app.route("/upload_documents", methods=["POST"])
-    # def upload_documents():
-    #     try:
-    #         data = request.data.decode("utf-8")
-    #         app.vector_db.upload_document(data)
-    #         # Update chatbot context after new document
-    #         app.chatbot.retrieve_context_from_db("general context", app.vector_db)
-    #         return "Document loaded successfully\n"
-    #     except Exception as e:
-    #         return jsonify({"error": str(e)}), 500
+    @app.route("/upload", methods=["POST"])
+    def upload_document():
+        try:
+            if "file" not in request.files:
+                return jsonify({"error": "No file provided"}), 400
+            
+            file = request.files["file"]
+            if file.filename == "":
+                return jsonify({"error": "No file selected"}), 400
+            
+            if not file.filename.endswith(".pdf"):
+                return jsonify({"error": "Only PDF files are supported"}), 400
+            
+            # Save the file temporarily
+            temp_path = os.path.join("temp", file.filename)
+            os.makedirs("temp", exist_ok=True)
+            file.save(temp_path)
+            
+            print(f"DEBUG - Processing document: {file.filename}")
+            # Upload to vector database
+            app.vector_db.upload_document(temp_path)
+            print(f"DEBUG - Document processed successfully: {file.filename}")
+            
+            # Clean up
+            os.remove(temp_path)
+            
+            return jsonify({"message": "Document uploaded and processed successfully"})
+            
+        except Exception as e:
+            print(f"Error in upload endpoint: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+            
 
     @app.route("/infer", methods=["POST"])
     def infer_with_chatbot():
@@ -95,6 +122,8 @@ def create_app():
                     else:
                         app.chatbot.memory.update_memory(user_msg, msg["content"])
             
+            # Always retrieve fresh context for the latest message
+            print(f"DEBUG - Retrieving context for query: {latest_message}")
             app.chatbot.retrieve_context_from_db(latest_message, app.vector_db)
             
             answer, sources = app.chatbot.infer(latest_message)
@@ -106,6 +135,36 @@ def create_app():
             
         except Exception as e:
             print(f"Error in infer endpoint: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route("/list_documents", methods=["GET"])
+    def list_documents():
+        try:
+            documents = app.vector_db.list_documents()
+            return jsonify({"documents": documents})
+        except Exception as e:
+            print(f"Error listing documents: {str(e)}")
+            return jsonify({"error": str(e)}), 500
+
+    @app.route("/delete_document", methods=["DELETE", "POST"])
+    def delete_document():
+        try:
+            data = request.get_json()
+            filename = data.get("filename")
+            
+            if not filename:
+                return jsonify({"error": "No filename provided"}), 400
+            
+            print(f"DEBUG - Attempting to delete document: {filename}")  # Add debug log
+            success = app.vector_db.delete_document(filename)
+            
+            if success:
+                return jsonify({"message": f"Document {filename} deleted successfully"}), 200
+            else:
+                return jsonify({"error": f"Failed to delete document {filename}"}), 404
+            
+        except Exception as e:
+            print(f"Error in delete_document endpoint: {str(e)}")
             return jsonify({"error": str(e)}), 500
 
     return app
