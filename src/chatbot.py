@@ -118,22 +118,25 @@ class ChatBot:
         return messages
 
     def infer(self, message: str, expand: bool = True):
-        # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
-        if not hasattr(self, "context"):
-            prompt = [
-                {"role": "system", "content": self.system_prompt},
-                *self.memory.history,
-                {"role": "user", "content": message}
-            ]
-            sources = []
-            
+        
         # To carry out the "Query expansion"
         if expand:
             expanded_message = self.expand_query(message)
         else:
             expanded_message = message
         
-        prompt = self.build_prompt(context=self.context, user_query=expanded_message)
+        # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
+        if not hasattr(self, "context"):
+            prompt = [
+                {"role": "system", "content": self.system_prompt},
+                *self.memory.history,
+                {"role": "user", "content": expanded_message}
+            ]
+            sources = []
+        else:
+            prompt = self.build_prompt(context=self.context, user_query=expanded_message)
+            sources = self.current_sources
+        
         answer = self.llm(prompt)
         self.memory.update_memory(human_msg=message, ai_msg=answer)
         
