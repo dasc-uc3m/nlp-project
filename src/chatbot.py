@@ -8,6 +8,10 @@ from src.db import VectorDB
 
 from llm.model import LocalLLM
 
+import nltk
+from nltk.corpus import wordnet
+from sentence_transformers import CrossEncoder
+
 class Memory:
     def __init__(self, max_messages_count=10):
         self._memory = []
@@ -30,8 +34,16 @@ class Memory:
 
 class ChatBot:
     def __init__(self):
+        
+        try: # To ensure WordNet is available
+            wordnet.synsets('test')
+        except LookupError:
+            nltk.download('wordnet')
+            
         self.llm = LocalLLM() # Attribute pointing to the LLM to send messages.
         self.memory = Memory() # Memory object that holds a history of the conversation that has been taken.
+
+        self.re_ranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
 
         # System prompt. This is like some 'general rules' that will be passed to the LLM to behave in a certain way.
         self.system_prompt = (
@@ -105,22 +117,51 @@ class ChatBot:
         ]
         return messages
 
-    def infer(self, message: str):
+    def infer(self, message: str, expand: bool = True):
+        # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
         if not hasattr(self, "context"):
             prompt = [
                 {"role": "system", "content": self.system_prompt},
                 *self.memory.history,
                 {"role": "user", "content": message}
             ]
-            sources = []  # No sources if no context
+            sources = []
+            
+        # To carry out the "Query expansion"
+        if expand:
+            expanded_message = self.expand_query(message)
         else:
-            prompt = self.build_prompt(context=self.context, user_query=message)
-            sources = self.current_sources  # Store sources from last context retrieval
+            expanded_message = message
         
+        prompt = self.build_prompt(context=self.context, user_query=expanded_message)
         answer = self.llm(prompt)
         self.memory.update_memory(human_msg=message, ai_msg=answer)
         
         return answer, sources
+
+    def expand_query(self, query: str) -> str:
+        """
+        Expand the user query by replacing words with their most common synonyms using WordNet.
+        """
+        words = query.split()
+        expanded_words = []
+
+        for word in words:
+            synonyms = wordnet.synsets(word)
+            if synonyms:
+                # Cogemos el primer sinónimo (el más habitual)
+                lemmas = synonyms[0].lemma_names()
+                if lemmas:
+                    # Usamos el primer lemma como expansión si es diferente
+                    synonym = lemmas[0].replace('_', ' ')
+                    expanded_words.append(synonym)
+                else:
+                    expanded_words.append(word)
+            else:
+                expanded_words.append(word)
+
+        expanded_query = " ".join(expanded_words)
+        return expanded_query
 
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
         context, sources = vector_db.retrieve_context(query, k=k)
@@ -134,6 +175,28 @@ class ChatBot:
         print(message)
         return message, sources
         
+    def retrieve_context_from_db_with_reranking(self, query, vector_db: VectorDB, k=3):
+        
+        initial_results = vector_db.retrieve_context(query, k=10) # Esto recupera k documentos
+
+        if not initial_results: # Esto por si te dice que nanai de la china no hay docs
+            print("No context found in the Database.")
+            return "No context found in the Database."
+
+        pairs = [(query, doc) for doc in initial_results] # Hacemos los pares query doc para re-rankear
+
+        scores = self.re_ranker.predict(pairs) # Usamos el cross-encoder model que está cargado en __init__ para sacar los scores
+
+        ranked_docs = [doc for _, doc in sorted(zip(scores, initial_results), key=lambda x: x[0], reverse=True)] # Ordemos los docs por relevancia en base al score
+
+        selected_contexts = ranked_docs[:k] # Cogemos los k mejores docs (3 en este caso)
+
+        context = "\n\n".join(selected_contexts) # Los unimos como un sólo contexto
+
+        self.initialize_context(context=context) # Cargamos el contexto nuevo en el chatbot
+        print("Succesfully loaded context after re-ranking.")
+
+        return "Succesfully loaded context after re-ranking."
 
     def __call__(self, message: str):
         self.infer(message=message)

@@ -33,12 +33,23 @@ def main():
     vector_db = VectorDB()
 
     vector_db.upload_document("data/hypertension.pdf")
-    chatbot.retrieve_context_from_db("Documents related with hypertension issues", vector_db, k=3)
+    #chatbot.retrieve_context_from_db("Documents related with hypertension issues", vector_db, k=3)
+    chatbot.retrieve_context_from_db_with_reranking("Documents related with hypertension issues", vector_db, k=3)
 
-    answer = chatbot.infer("Tell me something about the provided context.")
+    #prompt = "Tell me something about the provided context."
+    #prompt = "What are the symptoms of hypertension?"
+    prompt = "Could you explain the manifestations and indicators typically associated with arterial hypertension during early stages?"
+
+    print("\n--- Answer WITHOUT query expansion ---")
+    answer = chatbot.infer(prompt, expand=False)
     print(answer)
-    answer = chatbot.infer("What did you say in the previoius answer.")
-    print(answer)
+    
+    print("\n--- Answer WITH query expansion ---")
+    answer_expanded = chatbot.infer(prompt, expand=True)
+    print(answer_expanded)
+    
+    #answer = chatbot.infer("What did you say in the previoius answer.")
+    #print(answer)
 
 if __name__ == "__main__":
     initialize_app()
