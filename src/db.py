@@ -61,16 +61,17 @@ class VectorDB:
         source_doc = doc.metadata["source"]
         chunk_idx = doc.metadata["chunk_idx"]
         # Get every chunk of the same pdf document.
-        all_chunks = self.vector_store.get(where={"source": source_doc})
+        response = self.vector_store.get(where={"source": source_doc})
 
+        all_chunks = zip(response["documents"], response["metadatas"])
         # Sort chunks by chunk_idx
-        all_chunks["documents"] = sorted(all_chunks["documents"], key=lambda chunk : float(chunk.metadata["chunk_idx"]))
+        all_chunks = sorted(all_chunks, key=lambda c: float(c[1]["chunk_idx"]))
 
         nearby_chunks = []
         target_indices = set(range(chunk_idx - window, chunk_idx + window + 1))
-        for doc in all_chunks["documents"]:
-            doc_meta = doc["metadata"]
+        for doc in all_chunks:
+            doc_meta = doc[1]
             if doc_meta["chunk_idx"] in target_indices:
-                nearby_chunks.append(doc["content"])
+                nearby_chunks.append(doc[0])
 
         return "\n".join(nearby_chunks)
