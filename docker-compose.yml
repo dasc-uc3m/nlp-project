@@ -6,7 +6,7 @@ services:
       - "5001:5000"
     # platform: linux/arm64
     environment:
-      - MODEL_NAME=Qwen/Qwen2.5-0.5B-Instruct
+      - MODEL_NAME=google/gemma-3-1b-it
       - DEVICE=cuda
       - MAX_TOKENS=512
       - TEMPERATURE=0.7
