@@ -50,7 +50,7 @@ class CustomLLM:
         ).to(self.device)
         print(f"✅ Model loaded successfully and placed on {self.model.device}")
 
-        self.max_tokens = max_tokens
+        self.max_tokens = max_tokens if max_tokens != -1 else self.model.config.max_position_embeddings
         self.temperature = temperature
 
         # Identify model family
