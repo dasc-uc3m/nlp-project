@@ -48,10 +48,13 @@ class VectorDB:
         # Extract source information from documents
         sources = []
         for doc in docs:
+            # Extract just the filename from the full path
+            full_source = doc.metadata.get("source", "Unknown")
+            source_filename = os.path.basename(full_source)
+            
             source_info = {
-                "source": doc.metadata.get("source", "Unknown"),
-                "page": doc.metadata.get("page", 1),
-                "content": doc.page_content[:200] + "..."  # Preview of content
+                "source": source_filename,
+                "content": doc.page_content[:500] + "..."  # Preview of content
             }
             sources.append(source_info)
             
@@ -59,18 +62,79 @@ class VectorDB:
 
     def _search_nearby_chunks(self, doc, window):
         source_doc = doc.metadata["source"]
-        chunk_idx = doc.metadata["chunk_idx"]
         # Get every chunk of the same pdf document.
         all_chunks = self.vector_store.get(where={"source": source_doc})
 
-        # Sort chunks by chunk_idx
-        all_chunks["documents"] = sorted(all_chunks["documents"], key=lambda chunk : float(chunk.metadata["chunk_idx"]))
+        # Create a list of tuples (chunk_idx, content) for sorting
+        chunk_data = []
+        for i, content in enumerate(all_chunks["documents"]):
+            metadata = all_chunks["metadatas"][i]
+            # Use chunk_idx if available, otherwise use position in list
+            chunk_idx = float(metadata.get("chunk_idx", i))
+            chunk_data.append((chunk_idx, content))
 
+        # Sort chunks by chunk_idx
+        chunk_data.sort(key=lambda x: x[0])
+
+        # Get the current chunk's index
+        current_chunk_idx = float(doc.metadata.get("chunk_idx", 0))
+        
         nearby_chunks = []
-        target_indices = set(range(chunk_idx - window, chunk_idx + window + 1))
-        for doc in all_chunks["documents"]:
-            doc_meta = doc["metadata"]
-            if doc_meta["chunk_idx"] in target_indices:
-                nearby_chunks.append(doc["content"])
+        target_indices = set(range(int(current_chunk_idx - window), int(current_chunk_idx + window + 1)))
+        for idx, content in chunk_data:
+            if idx in target_indices:
+                nearby_chunks.append(content)
 
         return "\n".join(nearby_chunks)
+
+    def list_documents(self):
+        """List all documents in the vector store"""
+        try:
+            # Get all documents and their metadata
+            results = self.vector_store.get()
+            # Extract unique source documents
+            documents = set()
+            for metadata in results['metadatas']:
+                if 'source' in metadata:
+                    # Get just the filename from the full path
+                    filename = os.path.basename(metadata['source'])
+                    documents.add(filename)
+            return list(documents)
+        except Exception as e:
+            print(f"Error listing documents: {str(e)}")
+            return []
+
+    def delete_document(self, filename):
+        """Delete a document and all its chunks from the vector store"""
+        try:
+            print(f"DEBUG - Starting deletion for filename: {filename}")
+            # Get all documents and their metadata
+            results = self.vector_store.get()
+            print(f"DEBUG - Retrieved {len(results['metadatas'])} total documents")
+            
+            # Find all chunk IDs that belong to this document
+            ids_to_delete = []
+            for i, metadata in enumerate(results['metadatas']):
+                if 'source' in metadata:
+                    source_filename = os.path.basename(metadata['source'])
+                    print(f"DEBUG - Checking source: {source_filename} against target: {filename}")
+                    if source_filename == filename:
+                        ids_to_delete.append(results['ids'][i])
+            
+            print(f"DEBUG - Found {len(ids_to_delete)} chunks to delete")
+            if not ids_to_delete:
+                print(f"No document found with filename: {filename}")
+                return False
+            
+            # Delete the chunks
+            try:
+                self.vector_store.delete(ids=ids_to_delete)
+                print(f"Successfully deleted document: {filename}")
+                return True
+            except Exception as e:
+                print(f"Error during deletion of document {filename}: {str(e)}")
+                return False
+            
+        except Exception as e:
+            print(f"Error deleting document {filename}: {str(e)}")
+            return False
