@@ -79,6 +79,9 @@ class ChatBot:
         """
         del self.context
 
+    def has_context(self):
+        return hasattr(self, "context")
+
     def build_prompt(self, context: str, user_query: str):
         """
         This method builds the context following the llm's chat template that huggingface models use.

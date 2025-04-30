@@ -43,7 +43,7 @@ def create_app():
         print(f"Using existing collection with {collection_size} documents")
         app.chatbot.retrieve_context_from_db("general context", app.vector_db)
 
-
+    app.chatbot.remove_context()
 
     # Why this is here!!
     #These are flask routes, they can be used later in our streamlit app to allow us to directly use this from the frontend. right now, we are not using this
@@ -122,9 +122,10 @@ def create_app():
                     else:
                         app.chatbot.memory.update_memory(user_msg, msg["content"])
             
-            # Always retrieve fresh context for the latest message
-            print(f"DEBUG - Retrieving context for query: {latest_message}")
-            app.chatbot.retrieve_context_from_db(latest_message, app.vector_db)
+            if not app.chatbot.has_context():
+                # Retrieve fresh context for the latest message if it isn't loaded yet.
+                print(f"DEBUG - Retrieving context for query: {latest_message}")
+                app.chatbot.retrieve_context_from_db(latest_message, app.vector_db)
             
             answer, sources = app.chatbot.infer(latest_message)
             print(f"DEBUG - Sources from chatbot: {sources}")
@@ -166,6 +167,20 @@ def create_app():
         except Exception as e:
             print(f"Error in delete_document endpoint: {str(e)}")
             return jsonify({"error": str(e)}), 500
+
+    @app.route("/remove_context", methods=["DELETE", "POST"])
+    def remove_context():
+        if app.chatbot.has_context():
+            app.chatbot.remove_context()
+            return jsonify({"message": "Context deleted succesfully"}), 200
+        else:
+            return jsonify({"message": "Chatbot has already no context loaded."}), 200
+        
+    @app.route("/reset_chatbot", methods=["DELETE", "POST"])
+    def reset_chatbot():
+        app.chatbot.remove_context()
+        app.chatbot.memory.reset_memory()
+        return jsonify({"message": "Reset made succesfully."}), 200
 
     return app
 
