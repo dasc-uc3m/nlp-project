@@ -10,7 +10,7 @@ UPLOAD_URL = "http://localhost:5002/upload"
 REFRESH_URL = "http://localhost:5002/refresh_documents"
 LIST_DOCS_URL = "http://localhost:5002/list_documents"
 DELETE_DOC_URL = "http://localhost:5002/delete_document"
-MODEL_LIST = ["Gemma 3 1B", "Llama 3.2 1B"]
+MODEL_LIST = ["Gemma 3 1B", "Llama 3.2 1B", "Deepseek R1 Distill Qwen 1.5", "Qwen 2.5 0.5B"]
 LLM_SERVICE_URL = "http://localhost:5001"
 
 # ---- Page Config ----

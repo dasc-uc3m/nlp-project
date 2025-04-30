@@ -9,7 +9,9 @@ app = Flask(__name__)
 # Model mapping from frontend names to HuggingFace model names
 MODEL_MAPPING = {
     "Gemma 3 1B": "google/gemma-3-1b-it",
-    "Llama 3.2 1B": "meta-llama/Llama-3.2-1B"
+    "Llama 3.2 1B": "meta-llama/Llama-3.2-1B",
+    "Deepseek R1 Distill Qwen 1.5": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+    "Qwen 2.5 0.5B": "Qwen/Qwen2.5-0.5B-Instruct"
 }
 
 # Initialize with default model
@@ -17,7 +19,7 @@ current_model = os.getenv("MODEL_NAME", "google/gemma-2-2b-it")
 llm = CustomLLM(
     current_model,
     os.getenv("DEVICE", "cuda"),
-    int(os.getenv("MAX_TOKENS", 512)),
+    int(os.getenv("MAX_TOKENS", -1)),
     float(os.getenv("TEMPERATURE", 0.7))
 )
 
@@ -44,7 +46,7 @@ def switch_model():
             llm = CustomLLM(
                 hf_model_name,
                 os.getenv("DEVICE", "cuda"),
-                int(os.getenv("MAX_TOKENS", 512)),
+                int(os.getenv("MAX_TOKENS", -1)),
                 float(os.getenv("TEMPERATURE", 0.7))
             )
             current_model = hf_model_name
