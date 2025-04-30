@@ -141,6 +141,11 @@ class ChatBot:
             sources = self.current_sources
         
         answer = self.llm(prompt)
+        flag = "</think>"
+        if flag in answer:
+            start_idx = answer.find(flag)
+            if start_idx != -1:
+                answer = answer[start_idx + len(flag):]
         self.memory.update_memory(human_msg=message, ai_msg=answer)
         
         return answer, sources
