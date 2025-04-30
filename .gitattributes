@@ -1,2 +1,4 @@
 db/4aa91e8a-23a0-460a-906d-a76ac3bd18fb/data_level0.bin filter=lfs diff=lfs merge=lfs -text
 db/chroma.sqlite3 filter=lfs diff=lfs merge=lfs -text
+/home/carlangas/Documents/Master/NLP/ChatBotProject/db/45e805dc-9011-4360-a233-ad6528e83960/data_level0.bin filter=lfs diff=lfs merge=lfs -text
+db/45e805dc-9011-4360-a233-ad6528e83960/data_level0.bin filter=lfs diff=lfs merge=lfs -text
