@@ -1,0 +1,16 @@
+requests
+langchain==0.3.23
+langchain-huggingface==0.1.2
+langchain-chroma==0.2.2
+langchain-community==0.3.21
+sentence-transformers
+chromadb
+huggingface_hub[hf_xet]
+flask
+transformers==4.50.3
+nltk
+sentence-transformers
+matplotlib
+seaborn
+evaluate
+pandas

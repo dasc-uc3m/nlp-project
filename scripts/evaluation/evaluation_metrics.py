@@ -1,15 +1,18 @@
 import pandas as pd
-from chatbot import ChatBot
+import sys
+sys.path.append(".")
+from src.chatbot import ChatBot
 from src.db import VectorDB
 import matplotlib.pyplot as plt
 import seaborn as sns
 import evaluate # from https://huggingface.co/spaces/evaluate-metric/bertscore
+import os
 
 # Metric computation functions
 
-def compute_bert_score(generated, reference):
+def compute_bert_score(generated, reference, bertscore_metric):
     # Loads and computes BERTScore between generated and ground truth (reference) answers
-    bertscore_metric = evaluate.load("bertscore")
+    
     results = bertscore_metric.compute(predictions=[generated],
                                        references=[reference],
                                        lang="en")
@@ -27,14 +30,16 @@ def compute_mrr(gt_doc_id, retrieved_doc_ids):
     return 0.0
 
 # Load the ground truth (GT) that contains queries, GT answers and GT document name.
-df = pd.read_csv("Ground_Truth.csv")   
+df = pd.read_csv("scripts/evaluation/Ground_Truth.csv", encoding = "utf-8", delimiter=";")   
 
 chatbot = ChatBot()
 vector_db = VectorDB()
+bertscore_metric = evaluate.load("bertscore")
 
 # Evaluate each row 
 results = []
 for idx, row in df.iterrows():
+    print(f"Processing query nº {idx+1}/{len(df)}...")
     query = row["query"]
     gt_answer = row["ground_truth_answer"]
     gt_doc_id = row["ground_truth_doc_id"]
@@ -45,11 +50,14 @@ for idx, row in df.iterrows():
 
     # Generate response
     response, _ = chatbot.infer(query)
+    
+    # Reset memory
+    chatbot.memory.reset_memory()
 
     # Compute metrics
     recall_k = compute_recall_at_k(gt_doc_id, retrieved_doc_ids, k=3)
     mrr = compute_mrr(gt_doc_id, retrieved_doc_ids)
-    bert_p, bert_r, bert_f1 = compute_bert_score(response, gt_answer)
+    bert_p, bert_r, bert_f1 = compute_bert_score(response, gt_answer, bertscore_metric=bertscore_metric)
 
     # Save
     results.append({
@@ -65,8 +73,12 @@ for idx, row in df.iterrows():
         "BERTScore_F1": bert_f1
     })
 
+    print(f"Succesfully processed query.")
+
 # Save results 
 results_df = pd.DataFrame(results)
-results_df.to_csv("evaluation_results.csv", index=False)
+output_path = "scripts/evaluation/deepseek/"
+os.makedirs(output_path, exist_ok=True)
+results_df.to_csv(output_path+"evaluation_results.csv", index=False)
 print("Evaluation complete. Results saved to 'evaluation_results.csv'")
 
