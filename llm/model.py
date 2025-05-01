@@ -24,9 +24,7 @@ class CustomLLM:
         self,
         model_name,
         device,
-        max_tokens,
-        temperature=0.7,
-        rep_penalty=1.0
+        gen_kwargs
     ) -> None:
         self.model_loaded = False
         print(f"🚀 Starting to load model: {model_name} on {device}")
@@ -52,10 +50,10 @@ class CustomLLM:
         print(f"✅ Model loaded successfully and placed on {self.model.device}")
 
         # Generation parameters
-        self.max_tokens = max_tokens if max_tokens != -1 else self.model.config.max_position_embeddings
-        self.temperature = temperature
-        self.rep_penalty = rep_penalty
-
+        self.gen_kwargs = gen_kwargs
+        if "max_new_tokens" in self.gen_kwargs and self.gen_kwargs["max_new_tokens"] == -1:
+            self.gen_kwargs["max_new_tokens"] = self.model.config.max_position_embeddings
+        
         # Identify model family
         self.model_family = self._identify_model_family()
         print(f"🔍 Model family identified as: {self.model_family}")
@@ -136,9 +134,7 @@ class CustomLLM:
         model_inputs = self.tokenizer([text], return_tensors="pt").to(self.model.device)
         generated_ids = self.model.generate(
             **model_inputs,
-            max_new_tokens=self.max_tokens,
-            temperature=self.temperature,
-            repetition_penalty=self.rep_penalty
+            **self.gen_kwargs
         )
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)
