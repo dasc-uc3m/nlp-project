@@ -1,4 +1,4 @@
-# MidwifeGPT 🤰
+# 👩‍🍼 MaternAI
 Duarte Moura, Alejandro Merino, Sandra Eizaguerri and Carlos Garijo
 
 Universidad Carlos III de Madrid

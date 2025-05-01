@@ -127,7 +127,7 @@ def create_app():
                 print(f"DEBUG - Retrieving context for query: {latest_message}")
                 app.chatbot.retrieve_context_from_db(latest_message, app.vector_db)
             
-            answer, sources = app.chatbot.infer(latest_message)
+            answer, sources = app.chatbot.infer(latest_message, expand=False)
             print(f"DEBUG - Sources from chatbot: {sources}")
             return jsonify({
                 "response": answer,

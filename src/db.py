@@ -115,11 +115,13 @@ class VectorDB:
             results = self.vector_store.get()
             # Extract unique source documents
             documents = set()
+            
             for metadata in results['metadatas']:
                 if 'source' in metadata:
                     # Get just the filename from the full path
                     filename = os.path.basename(metadata['source'])
                     documents.add(filename)
+                    
             return list(documents)
         except Exception as e:
             print(f"Error listing documents: {str(e)}")

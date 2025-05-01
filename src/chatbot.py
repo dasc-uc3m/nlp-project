@@ -44,24 +44,37 @@ class ChatBot:
         self.memory = Memory() # Memory object that holds a history of the conversation that has been taken.
 
         self.re_ranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+        
+        # Download language detection model
+        try:
+            from langdetect import detect
+            self.detect_language = detect
+        except ImportError:
+            print("Installing langdetect...")
+            import subprocess
+            subprocess.check_call(["pip", "install", "langdetect"])
+            from langdetect import detect
+            self.detect_language = detect
 
         # System prompt. This is like some 'general rules' that will be passed to the LLM to behave in a certain way.
         self.system_prompt = (
-            "You are an AI assistant ChatBot that will be enrolled in a conversation with a certain user. "
-            "You will be provided with some context extracted from some documents that the user will provide. "
-            "You must provide useful answers always taking into account the given context. "
-            "Whenever it is possible, refer to the provided context to answer the user requests and, if necessary "
-            "cite the text in the documents to enrich your answers. "
-            "Answer always in the same language that the user is using."
+            "You are an AI assistant ChatBot engaged in a conversation with a user. "
+            "You will be provided with context extracted from documents the user provides. "
+            "Always provide useful answers, taking into account the given context. "
+            "Whenever possible, refer to the provided context and cite the text from the documents to enrich your answers. "
+            "IMPORTANT LANGUAGE RULE: You MUST ALWAYS respond in the EXACT SAME LANGUAGE as the user's question. "
+            "This is a strict requirement that must be followed for every response. "
+            "If the user's language is unclear, ask for clarification."
         )
 
         # Context prompt. This is the template of the message that will be sent to the LLM where we provide it with context.
         self.context_prompt = (
-            "Below I will provide you with some context that will be used to have a conversation between us. "
-            "The context is extracted from some documents, and it is specified between [START_OF_CONTEXT] and [END_OF_CONTEXT] "
-            "tags.\n"
-            "Answer all the future questions using this context, refering and citing it whenever it is necessary. "
-            "Please, read carefully and remember this context while we have this conversation. The context:\n"
+            "Below is some context extracted from documents, specified between [START_OF_CONTEXT] and [END_OF_CONTEXT] tags.\n"
+            "Use this context to answer all future questions, referring to and citing it whenever necessary. "
+            "Please read carefully and remember this context for our conversation. "
+            "IMPORTANT LANGUAGE RULE: You MUST ALWAYS respond in the EXACT SAME LANGUAGE as the user's question. "
+            "This is a strict requirement that must be followed for every response.\n"
+            "The context:\n"
             "[START_OF_CONTEXT]\n"
             "{context}\n"
             "[END_OF_CONTEXT]"
@@ -122,11 +135,20 @@ class ChatBot:
 
     def infer(self, message: str, expand: bool = False):
         
-        # To carry out the "Query expansion"
+        # Detect language of the message
+        try:
+            detected_lang = self.detect_language(message)
+            # Add language instruction to the message
+            message_with_lang = f"[LANGUAGE: {detected_lang.upper()}] {message}"
+        except:
+            message_with_lang = message
+            
         if expand:
-            expanded_message = self.expand_query(message)
+            expanded_message = self.expand_query(message_with_lang)
         else:
-            expanded_message = message
+            expanded_message = message_with_lang
+            
+        print(f"DEBUG: {expanded_message}")
         
         # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
         if not hasattr(self, "context"):
