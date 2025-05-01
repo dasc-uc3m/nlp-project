@@ -178,7 +178,8 @@ def create_app():
         
     @app.route("/reset_chatbot", methods=["DELETE", "POST"])
     def reset_chatbot():
-        app.chatbot.remove_context()
+        if app.chatbot.has_context():
+            app.chatbot.remove_context()
         app.chatbot.memory.reset_memory()
         return jsonify({"message": "Reset made succesfully."}), 200
 
