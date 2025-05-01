@@ -36,6 +36,8 @@ chatbot = ChatBot()
 vector_db = VectorDB()
 bertscore_metric = evaluate.load("bertscore")
 
+output_path = "scripts/evaluation/deepseek/"
+
 # Evaluate each row 
 results = []
 for idx, row in df.iterrows():
@@ -77,7 +79,7 @@ for idx, row in df.iterrows():
 
 # Save results 
 results_df = pd.DataFrame(results)
-output_path = "scripts/evaluation/deepseek/"
+
 os.makedirs(output_path, exist_ok=True)
 results_df.to_csv(output_path+"evaluation_results.csv", index=False)
 print("Evaluation complete. Results saved to 'evaluation_results.csv'")
