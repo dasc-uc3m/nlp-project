@@ -46,9 +46,9 @@ class CustomLLM:
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             torch_dtype="auto",
-            device_map="auto",
+            device_map={"": 0},
             token=os.getenv("HUGGINGFACE_TOKEN", None)
-        ).to(self.device)
+        )
         print(f"✅ Model loaded successfully and placed on {self.model.device}")
 
         # Generation parameters

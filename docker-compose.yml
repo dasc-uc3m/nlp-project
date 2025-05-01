@@ -6,7 +6,7 @@ services:
       - "5001:5000"
     # platform: linux/arm64
     environment:
-      - MODEL_NAME=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+      - MODEL_NAME=google/gemma-3-1b-it
       - DEVICE=cuda
       - MAX_TOKENS=2048
       - TEMPERATURE=0.7
