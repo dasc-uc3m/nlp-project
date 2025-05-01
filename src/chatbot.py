@@ -10,7 +10,11 @@ from llm.model import LocalLLM
 
 import nltk
 from nltk.corpus import wordnet
+from nltk.wsd import lesk
+from sentence_transformers import SentenceTransformer, util
 from sentence_transformers import CrossEncoder
+
+ST_MODEL = SentenceTransformer("all-mpnet-base-v2") 
 
 class Memory:
     def __init__(self, max_messages_count=10):
@@ -180,29 +184,47 @@ class ChatBot:
         
         return answer, sources
 
-    def expand_query(self, query: str) -> str:
+    def expand_query(self,query: str,max_expansions: int = 3, min_sim: float = 0.85) -> list[str]:
         """
-        Expand the user query by replacing words with their most common synonyms using WordNet.
+        1) Desambiguamos con Lesk + WordNet para generar variantes.
+        2) Calculamos emb de todas en batch.
+        3) Ordenamos por similitud con la query original.
+        4) Devolvemos solo las top‐K que superen min_sim.
         """
-        words = query.split()
-        expanded_words = []
 
-        for word in words:
-            synonyms = wordnet.synsets(word)
-            if synonyms:
-                # Cogemos el primer sinónimo (el más habitual)
-                lemmas = synonyms[0].lemma_names()
-                if lemmas:
-                    # Usamos el primer lemma como expansión si es diferente
-                    synonym = lemmas[0].replace('_', ' ')
-                    expanded_words.append(synonym)
-                else:
-                    expanded_words.append(word)
-            else:
-                expanded_words.append(word)
+        # 1) variantes con Lesk
+        variants = {query}
+        for w in query.split():
+            syn = lesk(query.split(), w)
+            if not syn:
+                continue
+            for lemma in syn.lemma_names():
+                alt = lemma.replace("_", " ")
+                if alt.lower() == w.lower():
+                    continue
+                variants.add(query.replace(w, alt))
 
-        expanded_query = " ".join(expanded_words)
-        return expanded_query
+        variants = list(variants)
+
+        # 2) emb y similitudes en batch
+        orig_emb = ST_MODEL.encode(query, convert_to_tensor=True)
+        cand_embs = ST_MODEL.encode(variants, convert_to_tensor=True)
+        sims = util.cos_sim(orig_emb, cand_embs)[0]  # tensor de forma (len(variants),)
+
+        # 3) emparejamos y ordenamos
+        scored = list(zip(variants, sims.tolist()))
+        scored.sort(key=lambda x: x[1], reverse=True)
+
+        # 4) filtrado por umbral + top‐K
+        final = []
+        for text, score in scored:
+            if score < min_sim:
+                break
+            final.append(text)
+            if len(final) >= max_expansions + 1:  # +1 porque contamos la original
+                break
+
+        return final
 
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
         context, sources = vector_db.retrieve_context(query, k=k)
@@ -216,28 +238,72 @@ class ChatBot:
         print(message)
         return message, sources
         
-    def retrieve_context_from_db_with_reranking(self, query, vector_db: VectorDB, k=3):
-        
-        initial_results = vector_db.retrieve_context(query, k=10) # Esto recupera k documentos
+    def retrieve_context_from_db_with_reranking(self, query: str, vector_db: VectorDB, k_initial: int = 5, k_final: int = 3):
+            """
+            1) Expandimos la query original (WordNet + Lesk) → lista de sub-queries.
+            2) Por cada sub-query llamamos a vector_db.retrieve_context(q, k_initial),
+            que nos devuelve (context_string, sources_list).
+            3) Recolectamos TODOS los `sources_list` (que son listas de dicts {'source', 'content'}).
+            4) Desduplicamos por el campo 'content'.
+            5) Re-rankeamos con CrossEncoder usando SIEMPRE la query original.
+            6) Cogemos los k_final primeros y construimos
+            — el `context` final concatenando sus `.content`,
+            — la lista de `sources`.
+            7) Igual que tu función “normal”, guardamos en self.context y self.current_sources.
+            """
 
-        if not initial_results: # Esto por si te dice que nanai de la china no hay docs
-            print("No context found in the Database.")
-            return "No context found in the Database."
+            # 1) Generar todas las queries
+            expanded_queries = self.expand_query(query)
 
-        pairs = [(query, doc) for doc in initial_results] # Hacemos los pares query doc para re-rankear
+            # 2) Recuperar los chunks ‘raw’ de cada sub-query
+            all_chunks = []  # aquí vamos a meter dicts {'source':…, 'content':…}
+            for q in expanded_queries:
+                context_str, chunks = vector_db.retrieve_context(q, k=k_initial)
+                # chunks es LISTA de dicts {'source','content'}
+                all_chunks.extend(chunks)
 
-        scores = self.re_ranker.predict(pairs) # Usamos el cross-encoder model que está cargado en __init__ para sacar los scores
+            if not all_chunks:
+                print("No context found in the Database.")
+                return "", []
 
-        ranked_docs = [doc for _, doc in sorted(zip(scores, initial_results), key=lambda x: x[0], reverse=True)] # Ordemos los docs por relevancia en base al score
+            # 3) Desduplicar por texto puro
+            seen = set()
+            unique_chunks = []
+            for chunk in all_chunks:
+                txt = chunk["content"]
+                if txt not in seen:
+                    seen.add(txt)
+                    unique_chunks.append(chunk)
+            # Limitar candidatos a un máximo razonable
+            candidates = unique_chunks[:50]
 
-        selected_contexts = ranked_docs[:k] # Cogemos los k mejores docs (3 en este caso)
+            # 4) Preparar los pares para el CrossEncoder (query original, texto chunk)
+            pairs = [(query, chunk["content"]) for chunk in candidates]
 
-        context = "\n\n".join(selected_contexts) # Los unimos como un sólo contexto
+            # 5) Re-rank
+            scores = self.re_ranker.predict(pairs)
 
-        self.initialize_context(context=context) # Cargamos el contexto nuevo en el chatbot
-        print("Succesfully loaded context after re-ranking.")
+            # 6) Ordenar por score y quedarnos con los best k_final
+            ranked = [
+                chunk
+                for _, chunk in sorted(zip(scores, candidates),
+                                    key=lambda x: x[0],
+                                    reverse=True)
+            ]
+            topk = ranked[:k_final]
 
-        return "Succesfully loaded context after re-ranking."
+            # 7) Construir context final y lista de fuentes
+            context_pieces = [c["content"] for c in topk]
+            sources        = [c["source"]  for c in topk]
+
+            final_context = "\n\n".join(context_pieces)
+
+            # 8) Guardamos igual que en la versión sin reranking
+            self.initialize_context(final_context)
+            self.current_sources = sources
+
+            print("Successfully loaded context after re-ranking.")
+            return final_context, sources
 
     def __call__(self, message: str):
         self.infer(message=message)

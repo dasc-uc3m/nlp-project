@@ -12,3 +12,4 @@ transformers==4.50.3
 nltk
 sentence-transformers
 streamlit
+langdetect

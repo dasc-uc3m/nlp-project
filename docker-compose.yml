@@ -6,7 +6,7 @@ services:
       - "5001:5000"
     # platform: linux/arm64
     environment:
-      - MODEL_NAME=deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
+      - MODEL_NAME=google/gemma-3-1b-it
       - DEVICE=cuda
       - GENERATION_PARAMETERS={"max_new_tokens":2048,"temperature":0.5,"repetition_penalty":1.1,"length_penalty":0.8}
       - HUGGINGFACE_TOKEN=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
