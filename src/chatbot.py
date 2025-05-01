@@ -64,7 +64,9 @@ class ChatBot:
             "Whenever possible, refer to the provided context and cite the text from the documents to enrich your answers. "
             "IMPORTANT LANGUAGE RULE: You MUST ALWAYS respond in the EXACT SAME LANGUAGE as the user's question. "
             "This is a strict requirement that must be followed for every response. "
-            "If the user's language is unclear, ask for clarification."
+            "If the user's language is unclear, ask for clarification.\n"
+            "If the user's query isn't related with healthcare, you MUST indicate that you are an assistant chatbot for healthcare, "
+            "specialized in maternity and feminine health areas and you are not the indicated assistant to solve that question."
         )
 
         # Context prompt. This is the template of the message that will be sent to the LLM where we provide it with context.
@@ -74,6 +76,12 @@ class ChatBot:
             "Please read carefully and remember this context for our conversation. "
             "IMPORTANT LANGUAGE RULE: You MUST ALWAYS respond in the EXACT SAME LANGUAGE as the user's question. "
             "This is a strict requirement that must be followed for every response.\n"
+            "Whenever is possible, cite and refer to the content provided in the following context in your answers.\n"
+            "If the context isn't directly related with the query the user has provided or the information provided "
+            "is not enough for answering the question, please, indicate it saying explicitly that you can't answer "
+            "to the request with the provided context.\n"
+            "If the user's query isn't related with healthcare, you MUST indicate that you are an assistant chatbot for healthcare, "
+            "specialized in maternity and feminine health areas and you are not the indicated assistant to solve that question.\n"
             "The context:\n"
             "[START_OF_CONTEXT]\n"
             "{context}\n"
