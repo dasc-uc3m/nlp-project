@@ -25,7 +25,8 @@ class CustomLLM:
         model_name,
         device,
         max_tokens,
-        temperature=0.7
+        temperature=0.7,
+        rep_penalty=1.0
     ) -> None:
         self.model_loaded = False
         print(f"🚀 Starting to load model: {model_name} on {device}")
@@ -50,8 +51,10 @@ class CustomLLM:
         ).to(self.device)
         print(f"✅ Model loaded successfully and placed on {self.model.device}")
 
+        # Generation parameters
         self.max_tokens = max_tokens if max_tokens != -1 else self.model.config.max_position_embeddings
         self.temperature = temperature
+        self.rep_penalty = rep_penalty
 
         # Identify model family
         self.model_family = self._identify_model_family()
@@ -134,7 +137,8 @@ class CustomLLM:
         generated_ids = self.model.generate(
             **model_inputs,
             max_new_tokens=self.max_tokens,
-            temperature=self.temperature
+            temperature=self.temperature,
+            repetition_penalty=self.rep_penalty
         )
         generated_ids = [
             output_ids[len(input_ids):] for input_ids, output_ids in zip(model_inputs.input_ids, generated_ids)

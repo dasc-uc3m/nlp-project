@@ -20,7 +20,8 @@ llm = CustomLLM(
     current_model,
     os.getenv("DEVICE", "cuda"),
     int(os.getenv("MAX_TOKENS", -1)),
-    float(os.getenv("TEMPERATURE", 0.7))
+    float(os.getenv("TEMPERATURE", 0.7)),
+    float(os.getenv("REP_PENALTY", 1.0))
 )
 
 @app.route('/switch_model', methods=['POST'])
