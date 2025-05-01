@@ -1,0 +1,297 @@
+query,generated_answer,ground_truth_answer,ground_truth_doc_id,retrieved_doc_ids,Recall@3,MRR,BERTScore_P,BERTScore_R,BERTScore_F1
+What is Kangaroo Mother Care (KMC) and when should it be initiated?,"Kangaroo mother care (KMC) is a form of newborn care where a mother kangaroos her baby in a kangaroo position, supporting the baby’s head and neck while they sleep. It’s a method of skin-to-skin contact and provides a secure and warm environment for the baby. It’s typically initiated when the baby is weighing between 2000 grams and less, and is recommended for newborns who are clinically stable.
+
+It’s important to note that KMC can begin after birth, after initial assessment and where needed basic resuscitation, provided the baby and mother are stable.","Kangaroo Mother Care (KMC) is recommended as routine care for all preterm or low-birth-weight infants. It involves early, continuous skin-to-skin contact and exclusive breastfeeding. KMC should be started as soon as possible after birth, whether in a health-care facility or at home, and provided for 8-24 hours per day.",low-birth-weight-infant_HNN,"['practice_pocket_guide_HNN', 'improve_preterm_birth_HNN', 'improve_preterm_birth_HNN']",0,0.0,0.8677151799201965,0.884466290473938,0.8760105967521667
+Is mother's own milk recommended for preterm infants?,"Yes, mother’s own milk is recommended for preterm infants, including very preterm infants (< 32 weeks’ gestation) or very low-birth-weight (LBW) infants.","Yes, mother's own milk is strongly recommended for feeding preterm or low-birth-weight infants, including very preterm or very low-birth-weight babies, due to its benefits for health and development.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.9208352565765381,0.9346624612808228,0.9276973605155945
+What if mother's milk for preterm infants is not available? What should be used?,"If mother’s milk is not available, donor human milk can be used. It’s recommended to use the highest quality donor milk possible, as it provides the most nutrients and antibodies.  The GDG recommends using donor milk as the primary source of nutrition for preterm and low-birth-weight infants, particularly when mother’s milk is not available.","hen mother's own milk is unavailable, donor human milk may be considered for feeding preterm or low-birth-weight infants, especially those who are very preterm or very low-birth-weight.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'Milk-Feeding_HNN']",1,1.0,0.8963432312011719,0.9260224103927612,0.9109411239624023
+Should multicomponent fortification of breast milk be used  for  preterm infants?,"Yes, multicomponent fortification of breast milk should be used for preterm infants. The evidence suggests that it can be beneficial, particularly for weight gain and length. However, the certainty of these benefits is moderate, and the lack of data on the specific types of fortifiers used in trials limits our understanding.","Multicomponent fortification of human milk is not routinely recommended for all preterm infants, but it may be considered for very preterm or very low-birth-weight infants.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.8789433240890503,0.8978757262229919,0.8883087038993835
+ What is the recommendation for starting feeding in preterm infants?,"In the domain recommendation status strength/type, the recommendation for starting feeding in preterm infants is “Strong recommendation, moderate-certainty evidence.”
+
+It is recommended to start feeding preterm infants as early as possible, ideally within the first hour of birth, with the goal of establishing a feeding pattern.","Feeding should begin as early as possible from the first day after birth. If the infant cannot breastfeed, expressed mother's milk or donor milk should be given as soon as it is available.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.8396713733673096,0.8630285263061523,0.8511897325515747
+Can preterm infants be given preterm formula?,"Yes, preterm infants can be given preterm formula. The evidence review suggests that nutrient-enriched preterm formula may be considered for very preterm (< 32 weeks’ gestation) or very low-birth-weight infants. However, it’s conditional on shared decision-making with parents, including informing them about the benefits and risks and the need for further research.","If mother's own milk and donor human milk are not available, nutrient-enriched preterm formula may be considered for very preterm or very low-birth-weight infants.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.8779478669166565,0.9082292914390564,0.8928318619728088
+Should exclusive breastfeeding be continued for preterm infants?,"Yes, exclusive breastfeeding should be continued for preterm infants, provided that the infant is medically deemed to be doing well and has no complications. The guidelines state that at least 80% of breastfeeding mothers of term infants report that someone on the staff offered assistance with breastfeeding within 6 hours after birth.
+
+Here’s a breakdown of why this is important, according to the text:
+
+*   **Evidence-based recommendation:** The text explicitly states that at least 80% of mothers report assistance with breastfeeding within 6 hours.
+*   **Medical justification:** The support provided is contingent on the infant’s health and well-being.
+*   **Focus on infant’s needs:** The guidance emphasizes that the infant's needs and comfort should be prioritized.
+
+Do you have any further questions about this?","Yes, exclusive breastfeeding is recommended for preterm or low-birth-weight infants until six months of age.",low-birth-weight-infant_HNN,"['breastfeeding_HNN', 'breast_feeding_HNN', 'breast_feeding_HNN']",0,0.0,0.8110771179199219,0.9054070711135864,0.8556501269340515
+Is iron supplementation necessary for preterm infants?,"Yes, iron supplementation is generally recommended for preterm infants, particularly those fed mother’s milk or donor human milk, to prevent iron deficiency anemia. The systematic review indicates that it is beneficial for growth and development.",Enteral iron supplementation is recommended for human milk-fed preterm or low-birth-weight infants who are not receiving iron from other sources.,low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.8882746696472168,0.8867338299751282,0.8875036239624023
+Is vitamin D supplementation  necessary for preterm infants?,"Yes, vitamin D supplementation is generally considered necessary for preterm infants. The evidence suggests it’s beneficial for several reasons, including:
+
+*   **Improved bone mineralization:** Vitamin D plays a crucial role in calcium absorption and bone mineralization, which is particularly important in preterm infants who are at higher risk of rickets.
+*   **Reduced risk of seizures and irritability:** Low vitamin D levels have been linked to increased seizure frequency and irritability in preterm infants.
+*   **Potential benefits for other conditions:** Vitamin D supplementation has been associated with improved growth and neurodevelopmental outcomes in preterm infants.
+
+The WHO recommends vitamin D supplementation for preterm infants with birth weights below 1.5 kg, and supplementation is typically initiated between birth and 7 days of age.
+
+Do you want me to elaborate on any of these points, or would you like me to provide more specific information about the dosage or guidelines?",Enteral vitamin D supplementation may be considered for human milk-fed preterm or low-birth-weight infants not receiving it from another source.,low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.8148211240768433,0.8684554696083069,0.8407838344573975
+Can zinc be supplemented to preterm infants?,"Yes, zinc supplementation can be considered for preterm infants, although the evidence is still evolving and the optimal approach is not fully established.
+
+Here’s a breakdown of what the evidence suggests:
+
+*   **Small to Moderate Benefit:** Several studies have shown a small to moderate benefit of zinc supplementation in preterm infants, particularly in reducing mortality and diarrhea.
+*   **Reduced Mortality:** A systematic review of 14 RCTs published in the *Pediatrics* journal found that zinc supplementation significantly reduced mortality in preterm infants (RR 0.73, 95% CI 0.46 to 1.16).
+*   **Reduced Diarrhea:** Similarly, studies indicated a reduction in diarrhea (events) with zinc supplementation, although the effect was less pronounced than the mortality benefit.
+*   **Decreased Respiratory Infections:** Some trials reported a decrease in respiratory infections, though the evidence was less consistent.
+*   **Limited Evidence on Growth:** The evidence on the impact on growth is less conclusive, with some studies showing a modest effect, but overall, the evidence is mixed.
+*   **Low-Certainty Evidence:** Several studies yielded low-certainty evidence regarding other outcomes, such as sepsis, mental development, and bone health.
+
+**Important Considerations:**
+
+*   **Conditional Recommendation:** The GDG (Global Data Group) recommends that zinc supplementation should be considered with caution and should be approached with parental involvement, emphasizing shared decision-making.
+*   **Ongoing Research:** More research is needed to determine the optimal dose, timing, and duration of zinc supplementation for preterm infants.
+*   **Other Markers:**  Further research is needed to assess the impact of zinc supplementation on other markers of bone health, such as osteopenia or rickets.
+
+Do you have any further questions about this information?",Zinc supplementation may be considered for preterm or low-birth-weight infants if not provided from other sources.,low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.7699097990989685,0.8659560680389404,0.8151133060455322
+Are probiotics recommended for preterm infants?,"Yes, probiotics are generally recommended for preterm infants, particularly those born weighing less than 1.5 kg. The Cochrane review indicated that there was some evidence of benefit, but the evidence was limited and variable.
+
+Here’s a breakdown of what the review suggests:
+
+*   **Evidence of Benefit:** Some trials showed a modest reduction in sepsis and necrotizing enterocolitis (NEC) in preterm infants receiving probiotics.
+*   **Low Certainty:** The evidence was low-to-very low certainty, meaning the results were inconsistent.
+*   **Variability:** The type of probiotic, dosage, and duration of treatment varied considerably.
+
+It’s important to note that the study emphasized the need for further research to determine the optimal probiotic formulations and dosages for this population.
+
+Do you have any further questions about this information?","Probiotics may be considered for human milk-fed very preterm infants, as part of preventive care.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.7980860471725464,0.8709697723388672,0.8329365849494934
+Is emollient therapy beneficial for preterm babies?,"Yes, emollient therapy is generally considered beneficial for preterm babies. The evidence from the systematic review indicates that it can improve neonatal outcomes, including reduced skin conditions and improved growth.
+
+Here’s a breakdown of what the text says:
+
+“In one study included in the systematic review (173) assessing the effect of delaying newborn bathing for 24 hours, more nurses reported feeling comfortable identifying the benefits of delayed bathing, its contraindications, and encouraging families and their nursing peers to delay the first bath by 24 hours during post-implementation surveys than before the implementation. There was no increase in workload.”
+
+The text suggests that this practice, using emollients, is associated with increased comfort and positive attitudes among nurses regarding delayed bathing. It also notes that there's a lack of robust evidence on the overall benefits of routine emollient application in preterm infants.
+
+Do you want me to elaborate on any specific aspect of this, or perhaps ask a follow-up question?","Yes, the application of topical oil (emollients) may be considered for preterm or low-birth-weight infants.",low-birth-weight-infant_HNN,"['maternal_and_newborn_care_HNN', 'maternal_and_newborn_care_HNN', 'low-birth-weight-infant_HNN']",1,0.3333333333333333,0.8159127235412598,0.8941149711608887,0.8532257080078125
+How should feeding volume be increased for preterm babies?,"In preterm or low-birth-weight (LBW) infants, including very preterm (< 32 weeks’ gestation) or very LBW (< 1.5 kg), who need to be fed by an alternative feeding method to breastfeeding (e.g. gastric tube feeding or cup feeding), feed volumes can be increased by up to 30 ml/kg per day. (Conditional recommendation, moderate-certainty evidence)
+
+Remarksred decision-making with parents; this includes informing parents about the benefits and risks and the need for further research.
+"," For infants requiring alternative feeding methods, such as gastric tube or cup feeding, feed volumes can be increased by up to 30 ml/kg per day.",low-birth-weight-infant_HNN,"['low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN', 'low-birth-weight-infant_HNN']",1,1.0,0.8501136302947998,0.9548341631889343,0.8994359970092773
+What is hypoxaemia and why is it dangerous in children?,"Hypoxaemia, or low oxygen levels in the blood, is a serious condition that can be dangerous in children. It occurs when the amount of oxygen delivered to the body doesn’t match the amount of oxygen the body needs. In children, this is particularly concerning because their bodies are constantly growing and developing, requiring a higher oxygen supply to support these processes.
+
+Here’s a breakdown of why it’s dangerous:
+
+*   **Organ Dysfunction:** Hypoxaemia disrupts essential cellular functions, leading to organ dysfunction. This can affect the heart, lungs, brain, and other vital organs.
+*   **Impaired Growth and Development:** Oxygen is crucial for proper growth and development. Hypoxaemia hinders these processes, potentially leading to stunted growth, developmental delays, and other complications.
+*   **Increased Risk of Complications:** It significantly increases the risk of serious complications, such as seizures, respiratory failure, and even death.
+*   **Neonatal Hypoxaemia:** Babies are particularly vulnerable to hypoxaemia due to their underdeveloped lungs and increased oxygen demands.
+
+Essentially, it’s a critical situation where the body isn't getting enough oxygen to function properly, and the consequences can be significant.","Hypoxaemia is a condition where there is a low level of oxygen in the blood. It is life-threatening because it can lead to organ dysfunction and death, especially in children with pneumonia, neonatal conditions, or during surgical emergencies.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.8263553380966187,0.9064846634864807,0.8645673394203186
+What is the normal SpO_ level in children?,"According to the text, the normal SpO2 level in children is generally considered to be between 90% and 94%. However, this can vary depending on factors like age and altitude.
+","At sea level, normal SpO_ levels range from 97% to 99%. A threshold of <90% is commonly used to initiate oxygen therapy, as lower levels may rapidly progress to critical oxygen deficiency.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.8845089673995972,0.8833891749382019,0.8839487433433533
+How can health workers detect hypoxaemia?,"Pulse oximetry is the most accurate non-invasive method for detecting hypoxaemia. It measures the percentage of oxygenated haemoglobin in arterial blood (SpO2). The pulse oximeter consists of a computerized unit and a sensor probe, which is attached to the patient’s finger, toe, or earlobe. The oximeter display shows a pulse rate and, in most models, a graphical display of the blood flow past the probe (the plethysmographic or pulse wave). The technology is robust and the cost quite low. Pulse oximetry is also used to detect and monitor hypoxaemia, making it an accepted standard for detecting hypoxaemia (26).
+
+","Pulse oximetry is the recommended method for detecting hypoxaemia. If not available, clinical signs such as central cyanosis, nasal flaring, grunting, and inability to feed may be used as indicators.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.8294655680656433,0.8696795105934143,0.8490966558456421
+What are some clinical signs of hypoxaemia in neonates?,"According to the text, some clinical signs of hypoxaemia in neonates include:
+
+*   Central cyanosis (blue coloring of the skin and mucous membranes)
+*   Nasal flaring
+*   Inability to feed (when due to respiratory distress)
+*   Grunting with every breath
+*   Depressed mental state (i.e., drowsy, lethargic)
+
+","Signs include central cyanosis, apnoea, bradycardia, and poor feeding. However, these are not always specific, so pulse oximetry is strongly recommended.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.8003698587417603,0.8471949100494385,0.8231170177459717
+What equipment is most suitable to detect hypoxaemia in hospitals?,"The text states that pulse oximeters are the most accurate non-invasive method for detecting hypoxaemia. It also mentions that blood gas analysis is expensive and not suitable for hospitals with limited resources. Therefore, pulse oximeters are the most suitable equipment for detecting hypoxaemia in hospitals.","Pulse oximeters are the most suitable non-invasive tool for detecting and monitoring hypoxaemia, particularly in children with respiratory conditions.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.8970965147018433,0.9203303456306458,0.9085648655891418
+When should oxygen therapy be started in children?,"When should oxygen therapy be started in children?
+
+In children with severe anaemia, severe heart failure, septic shock or acute neurological illness, oxygen therapy should be initiated as soon as possible. Children with emergency signs (obstructed or absent breathing, severe respiratory distress, centralul receive oxygen therapy during the resuscitation phase if their SpO2 is < 94%. 
+
+","Oxygen should be given when SpO_ falls below 90%, or when clinical signs like central cyanosis, severe respiratory distress, or grunting are observed.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'recommendations_child_health_HNN']",1,1.0,0.8582079410552979,0.8820276260375977,0.8699547648429871
+What are the main sources of oxygen in healthcare settings?,"The main sources of oxygen in healthcare settings are cylinders, concentrators, and pipelines. Oxygen cylinders are produced in manufacturing plants by cooling air and pumping pure oxygen into them. Concentrators draw air from the environment and extract nitrogen, providing a safer, less expensive, and more reliable source. Pipelines deliver oxygen at high pressure to equipment like ventilators and anaesthetizers.","The main sources are oxygen concentrators, cylinders, and central pipeline systems. Concentrators are especially suitable for low-resource settings due to their reliability and cost-effectiveness.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'preventable_deaths_HNN', 'Oxygen_Use_Inpatient_HNN']",1,1.0,0.8694260716438293,0.9078136086463928,0.8882052898406982
+What is the preferred method to deliver oxygen in infants?,The preferred method to deliver oxygen in infants is the nasal prongs. They are the best method for delivering oxygen to young infants.,"Nasal prongs are the preferred method due to their safety, efficiency, and low risk of complications. Standard flow rates vary by age and weight.",Oxygen_Therapy_child_HNN,"['Care_Children_HNN', 'Care_Children_HNN', 'Care_Children_HNN']",0,0.0,0.8930603265762329,0.8636794686317444,0.8781241178512573
+Are face masks and head boxes recommended for children?,"Yes, face masks and head boxes are generally recommended for children, especially newborns. Here’s why:
+
+**Face Masks:**
+
+*   **Reduced Risk of Infection:** Face masks help minimize the spread of respiratory droplets, reducing the risk of infection for both the child and the healthcare provider.
+*   **Protection for Healthcare Workers:** They offer a degree of protection to those providing care.
+*   **Evidence:** Studies have shown that face masks can reduce the transmission of respiratory viruses, including COVID-19, in infants and young children.
+
+**Head Boxes:**
+
+*   **Improved Oxygenation:** Head boxes are designed to provide a more consistent and controlled flow of oxygen to the infant’s lungs, promoting better oxygenation.
+*   **Reduced Risk of Carbon Dioxide Accumulation:** Head boxes minimize the risk of carbon dioxide buildup in the infant’s bloodstream, which can lead to respiratory distress.
+*   **Evidence:** Research suggests that head boxes can improve respiratory function and reduce the risk of apnea in premature infants.
+
+**Important Note:** While these devices offer benefits, it’s crucial to remember that they are not a replacement for proper medical care. Always follow the guidance of a healthcare professional regarding the appropriate use of these devices.
+
+Do you have any further questions about this?","No, face masks, head boxes, and tents are not recommended due to high oxygen consumption and risks such as carbon dioxide toxicity.",Oxygen_Therapy_child_HNN,"['Newborn_Reference_Manual_HNN', 'Oxygen_Therapy_child_HNN', 'newborn_resuscitation_HNN']",1,0.5,0.7902094125747681,0.8810705542564392,0.8331701159477234
+What is the role of humidification in oxygen therapy?,Humidity is needed when oxygen is given via a nasopharyngeal catheter and for all patients with an endotracheal tube or a tracheostomy.,"Humidification is required only when oxygen is delivered via methods that bypass the nose, like nasopharyngeal catheters or with high-flow systems.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'recommendations_child_health_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.9050898551940918,0.9033716320991516,0.9042299389839172
+What complications can arise from improper oxygen delivery?,"Exposure to supplemental oxygen can lead to several complications, primarily due to the potential for oxygen toxicity. Here’s a breakdown of some of the most common:
+
+*   **Retinopathy of Prematurity (ROP):** This is a significant concern in premature infants, and improper oxygen delivery can exacerbate it.
+*   **Lung Injury:** Even with low oxygen concentrations, exposure can cause lung damage and inflammation.
+*   **Bronchopulmonary Dysplasia (BPD):**  Cumulative oxygen exposure can contribute to the development of BPD, a chronic lung condition.
+*   **Increased Risk of Respiratory Infections:**  Improper oxygen delivery can weaken the immune system, increasing susceptibility to infections.
+*   **Potential for Pulmonary Edema:**  In severe cases, excessive oxygen delivery can lead to fluid accumulation in the lungs.
+
+It’s important to note that the severity of these complications often depends on factors like the oxygen concentration, the infant's underlying health, and the duration of exposure.","Complications include nasal bleeding, airway obstruction, gastric distension, and in severe cases, pneumothorax if high flow rates are used inappropriately.",Oxygen_Therapy_child_HNN,"['Oxygen_Use_Inpatient_HNN', 'Oxygen_Use_Inpatient_HNN', 'Oxygen_Therapy_child_HNN']",1,0.3333333333333333,0.7988853454589844,0.8540567755699158,0.8255502581596375
+Why is oxygen therapy often unavailable in developing countries?,"Oxygen therapy remains inaccessible for a large proportion of severely underdeveloped countries due to several factors. These include limited access to resources, inadequate infrastructure, and logistical challenges. It’s particularly challenging in small district hospitals where oxygen supplies are unreliable and the benefits of treatment may be diminished by poorly maintained equipment, inadequate trained staff, and inadequate guidelines.","Challenges include unreliable supply chains, lack of trained staff, poorly maintained equipment, and inadequate hospital infrastructure.",Oxygen_Therapy_child_HNN,"['Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Therapy_child_HNN']",1,1.0,0.8663585782051086,0.9201202392578125,0.8924304842948914
+Should oxygen therapy be used for all children with respiratory distress?,"Yes, oxygen therapy should be used for all children with respiratory distress. The text states that “oxygen is important in the care of newborn infants because many conditions that affect babies in the first days of life can result in low levels of oxygen in the body.” Prematurity and respiratory distress syndrome, surfactant deficiency, pneumonia, and asphyxia all result in hypoxemia, and supplemental oxygen is an essential lifesaving treatment.","Not always. While oxygen is vital for hypoxaemic children, unnecessary use should be avoided. Pulse oximetry should guide decisions when possible.",Oxygen_Therapy_child_HNN,"['Oxygen_Use_Inpatient_HNN', 'recommendations_child_health_HNN', 'Oxygen_Therapy_child_HNN']",1,0.3333333333333333,0.8503912687301636,0.8784176111221313,0.8641772866249084
+How should oxygen be administered in severely ill neonates?,"In severely ill neonates, oxygen administration should be conducted with caution and carefully monitored. Here’s a breakdown of guidelines:
+
+**1. Initial Assessment:** First, assess the baby’s respiratory status – are they breathing adequately? Are they exhibiting signs of hypoxia (e.g., pale skin, rapid breathing, cyanosis)?
+
+**2. Oxygen Delivery Methods:**
+
+*   **Nasal Cannula:** This is generally the preferred method for newborns. It’s gentle and allows for precise oxygen delivery.
+*   **Mid-Pedal Tube:**  This is used when nasal cannulation isn’t feasible or effective. It provides a more direct route to the lungs.
+*   **Non-Invasive Ventilation (NIV):**  If the baby is struggling to breathe, a low-flow NIV may be necessary, but it should be carefully monitored to avoid over-oxygenation.
+
+**3. Oxygen Flow Rate:**  The oxygen flow rate should be carefully adjusted based on the baby’s respiratory effort. Start with a low flow rate and gradually increase it if the baby responds well.  A general guideline is 2-4 liters per minute, but this *must* be individualized.
+
+**4. Monitoring:** Continuously monitor the baby's oxygen saturation (SpO2) using a pulse oximeter.  A SpO2 below 90% indicates hypoxemia and requires immediate attention.
+
+**5.  Considerations for Severe Illness:**  In severely ill neonates, it's crucial to be particularly cautious about oxygen delivery.  Over-oxygenation can worsen the situation.
+
+**6.  Important Note:** Always follow the specific recommendations provided by the neonatologist or healthcare provider.
+
+Do you have any other questions about this process?","Nasal prongs or catheters at low flow rates are preferred. Oxygen saturation should be maintained at or above 88%, but not exceeding 95% in preterm infants to avoid complications.",Oxygen_Therapy_child_HNN,"['Newborn_Reference_Manual_HNN', 'Retinopathy_Prematurity_HNN', 'care_small_newborns_who']",0,0.0,0.7875058054924011,0.8524168729782104,0.8186767101287842
+What training is required to implement oxygen therapy safely?,"To implement oxygen therapy safely, nurses, midwives, physicians, and other health professionals who care for newborns receiving oxygen therapy should have specific training and demonstrated skills in:
+
+*   Indications for oxygen use set-up and care of delivery systems
+*   Prevention of excessive oxygen concentrations
+*   Hygiene, infection prevention and thermal protection when delivering oxygen
+*   Airway suctioning
+*   Monitoring frequency and adherence to target saturation ranges
+*   Documentation and use of data to review process and outcome measures
+*   Awareness of complications
+
+These recommendations are derived from the Pocket book of hospital care for children.","Health workers should be trained to recognize signs of hypoxaemia, use and maintain pulse oximeters and concentrators, and correctly deliver oxygen using appropriate devices.",Oxygen_Therapy_child_HNN,"['Oxygen_Use_Inpatient_HNN', 'Oxygen_Therapy_child_HNN', 'Oxygen_Use_Inpatient_HNN']",1,0.5,0.8111335039138794,0.8712095022201538,0.8400989174842834
+What are birth defects and why are they a global concern?,"Okay, here’s my response in English, based on the provided context:
+
+Birth defects are abnormalities of body structure or function that occur during a person’s development and are present at birth. They encompass a wide range of conditions, from minor variations to severe, life-altering problems.
+
+Globally, birth defects are a significant concern due to their impact on individuals and communities. According to the WHO, an estimated 270,000 deaths occur annually during the first 28 days of life due to birth defects. This highlights the substantial burden these conditions place on populations worldwide.
+
+The concerns surrounding birth defects stem from their potential for long-term health complications and disabilities. They can affect physical development, cognitive function, and overall quality of life. Furthermore, the lack of access to timely and appropriate care for affected infants significantly contributes to the global burden.
+
+The context provided emphasizes the importance of surveillance programs, particularly in identifying high-risk populations and implementing targeted interventions.  It also stresses the need for comprehensive data collection and analysis to inform policy and improve management of these conditions.","Birth defects are structural or functional abnormalities that occur during intrauterine life. They are a significant global concern because they cause long-term disability, infant mortality, and have a profound impact on individuals, families, and healthcare systems",Prevent_birth_defects_HNN,"['Birth_defects_HNN', 'Birth_defects_HNN', 'Birth_defects_HNN']",0,0.0,0.8443355560302734,0.9101210236549377,0.8759949207305908
+How many children worldwide are affected by birth defects each year?,"According to the WHO, an estimated 270,000 deaths globally were attributable to congenital anomalies during the first 28 days of life, with neural tube defects (NTDs) being one of the most serious and most common of these anomalies.
+
+Therefore, approximately 270,000 children worldwide are affected by birth defects each year.","It is estimated that more than 8 million children are born annually with a serious birth defect of genetic or partially genetic origin, most of whom are in low- and middle-income countries.",Prevent_birth_defects_HNN,"['care_small_newborns_who', 'Birth_defects_HNN', 'Birth_defects_HNN']",0,0.0,0.8642212152481079,0.8687651753425598,0.8664872050285339
+Can birth defects be prevented?,"Yes, birth defects can be prevented, although it’s a complex challenge. The World Health Organization (WHO) and the Centers for Disease Control and Prevention (CDC) emphasize that preventative measures can significantly reduce the incidence of congenital anomalies.
+
+Here’s a breakdown of how prevention is achieved:
+
+*   **Maternal Health:** A woman’s health during pregnancy plays a crucial role. Factors like pre-existing conditions like diabetes, obesity, and hypertension, as well as smoking and alcohol consumption, can increase the risk of birth defects.
+
+*   **Screening Programs:** Routine screening programs, particularly in high-risk populations, can identify pregnancies at risk. These programs often involve ultrasounds and other tests to assess fetal health.
+
+*   **Genetic Counseling:** Genetic counseling helps women understand their family history and assess the risk of inherited conditions that can contribute to birth defects.
+
+*   **Improved Healthcare:** Access to quality prenatal care, including regular check-ups, proper nutrition, and management of existing health conditions, is vital.
+
+*   **Lifestyle Factors:** Encouraging healthy lifestyles, such as maintaining a healthy weight, avoiding smoking and alcohol, and managing chronic conditions, can also contribute to a healthier pregnancy and reduce the risk of birth defects.
+
+It's important to note that while prevention is possible, it's not always foolproof. Some birth defects are caused by genetic factors that are not fully understood, and some risks are unavoidable.","Yes, many birth defects can be prevented through cost-effective interventions such as vaccination, adequate nutrition, fortification of foods with folic acid and iodine, and appropriate prenatal care.",Prevent_birth_defects_HNN,"['Birth_defects_HNN', 'Birth_defects_HNN', 'Birth_defects_HNN']",0,0.0,0.8050798177719116,0.874407172203064,0.8383126258850098
+What are the key strategies for preventing birth defects?,"Okay, based on the provided text, here’s an answer to your question:
+
+The text suggests that key strategies for preventing birth defects involve several approaches. It highlights the importance of:
+
+*   **Identifying and Monitoring Critical Birth Defects:** The text emphasizes the need to identify and monitor birth defects with known modifiable risk factors – particularly those related to conditions like Down syndrome and gastroschisis.
+*   **Strengthening Surveillance Systems:** The text states that surveillance systems are crucial for tracking and identifying these defects.
+*   **Collaborating with Clinicians:** The text suggests the importance of having trained staff in the birthing centers and clinical setting to accurately classify and code birth defects.
+
+Does that answer your question based on the provided text?","Key strategies include ensuring maternal health, preventing infections during pregnancy, improving nutrition, fortifying food with essential vitamins and minerals, and expanding access to quality health services before and during pregnancy.",Prevent_birth_defects_HNN,"['Birth_defects_HNN', 'Birth_defects_HNN', 'Birth_defects_HNN']",0,0.0,0.7962230443954468,0.8508493900299072,0.8226304054260254
+How does congenital syphilis affect newborns?,"Okay, here’s my response to your question, in the same language as your prompt:
+
+Congenital syphilis, which occurs when a pregnant woman has syphilis during her pregnancy, can have significant and varied effects on newborns. It’s a serious condition that can impact multiple systems in the baby’s body. Here’s a breakdown of how it can affect them:
+
+**Developmental Issues:**
+
+*   **Growth Retardation:** Newborns born with congenital syphilis often experience slowed growth and development.
+*   **Neurological Problems:** This is a significant concern. It can lead to developmental delays, including impaired motor skills, cognitive impairment, and behavioral problems.
+*   **Hearing Impairment:**  Hearing loss, particularly in the ears, is a common finding.
+*   **Vision Problems:**  Optic neuropathy (damage to the optic nerve) can occur, potentially leading to vision impairment.
+
+**Physical Manifestations:**
+
+*   **Skin Lesions:**  The baby may develop skin lesions, including sores, rashes, and changes in the skin pigmentation.
+*   **Joint Swelling:**  Joint swelling, particularly in the knees and ankles, is frequently observed.
+*   **Dental Problems:**  The baby may have dental abnormalities, such as mulberry molars (teeth with a crescent-shaped cusp) or other dental lesions.
+*   **Heart and Cardiac Abnormalities:**  Congenital syphilis can cause congenital heart defects, affecting the heart’s structure and function.
+*   **Blood Disorders:**  The baby may have anemia (low red blood cell count) and thrombocytopenia (low platelet count), increasing the risk of bleeding.
+
+**Other Potential Complications:**
+
+*   **Liver Dysfunction:**  The liver can be affected, potentially leading to liver damage.
+*   **Kidney Problems:**  Kidney function can be compromised.
+*   **Neurological Issues:**  In some cases, congenital syphilis can impact the nervous system, leading to seizures or other neurological problems.
+
+**Important Note:** The severity of these effects varies greatly depending on the stage of infection, the gestational age of the baby, and the overall health of the mother.
+
+Do you have any further questions about specific aspects of congenital syphilis, or would you like me to elaborate on any particular area?","Congenital syphilis can lead to miscarriage, stillbirth, prematurity, low birth weight, and neonatal death. Surviving infants may suffer from bone deformities, neurological impairment, or developmental delay.",Prevent_birth_defects_HNN,"['Newborn_Reference_Manual_HNN', 'Newborn_Reference_Manual_HNN', 'Birth_defects_HNN']",0,0.0,0.7699592113494873,0.8635767698287964,0.8140854239463806
+What interventions help eliminate congenital syphilis?,"According to the provided text, the following interventions are recommended to eliminate congenital syphilis:
+
+*   **Standard Precautions:** Implementing standard precautions while providing care and ensuring good hand hygiene practices.
+*   **Use of Standard Precautions:** Utilizing standard precautions when caring for newborns with congenital syphilis.
+*   **Good Hand Hygiene Practices:** Maintaining good hand hygiene practices.
+*   **Immunization:** Administering at least two doses of human tetanus vaccine prior to childbirth.
+*   **HBV Vaccination:** Administering HBV vaccination, if feasible and available.
+*   **HIV Vaccination:** Vaccination against HIV, if available.
+
+These measures are aimed at preventing mother-to-child transmission of congenital syphilis.","Early prenatal screening, diagnosis, and timely treatment of syphilis in pregnant women and their partners are essential to eliminating congenital syphilis.",Prevent_birth_defects_HNN,"['care_small_newborns_who', 'Standards_Maternal_Neonatal_care_HNN', 'Infection_Prevention_NICU_HNN']",0,0.0,0.7893962860107422,0.8737558126449585,0.8294365406036377
+How can rubella infection during pregnancy affect the baby?,"Rubella infection during pregnancy can have significant and potentially devastating effects on the baby, leading to congenital abnormalities and developmental problems. It’s a serious concern, and early diagnosis and treatment are crucial. Here’s a breakdown of the potential consequences:
+
+*   **Congenital Rubella Syndrome (CRS):** This is the most well-known and severe complication. It can result in a range of defects, including cataracts, heart disease, hearing impairment, developmental delays, and neurological problems.
+*   **Microcephaly:**  A significantly smaller than expected head size.
+*   **Microphthalmia:**  Small eyes and facial features.
+*   **Congenital Heart Disease:**  Abnormal heart structure.
+*   **Hearing Impairment:**  Hearing loss is common.
+*   **Developmental Delays:**  Delayed motor, speech, and cognitive development.
+*   **Autism Spectrum Disorder (ASD):**  There’s increasing evidence linking rubella exposure to an increased risk of ASD.
+*   **Diabetes Mellitus:**  A predisposition to developing diabetes later in life.
+*   **Thyroiditis:**  Thyroid gland inflammation.
+
+**Important Note:** The severity of CRS can vary depending on the gestational age at which the infection occurs and the mother’s immune status.
+
+Do you have any further questions about this, or would you like me to elaborate on a specific aspect of the impact of rubella during pregnancy?","Rubella infection in early pregnancy can cause congenital rubella syndrome, leading to deafness, blindness, heart defects, and developmental delays in infants.",Prevent_birth_defects_HNN,"['Standards_Maternal_Neonatal_care_HNN', 'Standards_Maternal_Neonatal_care_HNN', 'Infection_Prevention_NICU_HNN']",0,0.0,0.7873759865760803,0.9165266752243042,0.8470566868782043
+What is recommended to prevent congenital rubella syndrome?,"According to the standard, countries where rubella vaccine is included in the national immunization schedule must:
+
+*   Vaccinate children aged 12 months or older and/or schoolgirls and/or women of childbearing age against rubella, according to national policy and guidelines.
+
+In all countries, pregnant women with suspected rubella or exposure to rubella should be followed up and reported.",Vaccination with the rubella-containing vaccine before pregnancy is the most effective method for preventing congenital rubella syndrome.,Prevent_birth_defects_HNN,"['Infection_Prevention_NICU_HNN', 'Standards_Maternal_Neonatal_care_HNN', 'Standards_Maternal_Neonatal_care_HNN']",0,0.0,0.8270210027694702,0.8736714124679565,0.8497064113616943
+How does food fortification help prevent birth defects?,"Okay, let’s address how food fortification can help prevent birth defects.
+
+According to the text, food fortification can help prevent birth defects by increasing the intake of essential nutrients, particularly vitamins and minerals, into the food supply. These nutrients are crucial for healthy fetal development and can help reduce the risk of various birth defects. The text highlights that fortified foods, like vitamin A supplements, can improve maternal health and, consequently, reduce the risk of birth defects in the child.  It also mentions that the benefits are most pronounced in children under 5 years old.",Fortifying foods with micronutrients such as folic acid and iodine significantly reduces the risk of neural tube defects and cognitive impairments caused by iodine deficiency.,Prevent_birth_defects_HNN,"['low-birth-weight-infant_HNN', 'commodities_HNN', 'Maternal_child_nutrition']",0,0.0,0.8429968357086182,0.8631043434143066,0.8529321551322937
+Which nutrients are especially important during pregnancy to prevent defects?,"During pregnancy, certain nutrients are particularly crucial for preventing developmental defects in the baby. These include Folate, Vitamin D, Vitamin B12, and iodine. Folate is essential for forming DNA and RNA, crucial for cell growth and development. Vitamin D helps with calcium absorption and bone development, which is vital for a healthy pregnancy. Vitamin B12 is important for nerve function and red blood cell production. Iodine is essential for thyroid hormone production, which is vital for brain development.
+
+","Folic acid and iodine are particularly important. Folic acid helps prevent neural tube defects, while iodine supports brain development and prevents intellectual disabilities.",Prevent_birth_defects_HNN,"['Building_Skills_HNN', 'Maternal_child_nutrition', 'puerperal_sepsis_who']",0,0.0,0.8644825220108032,0.9042569398880005,0.8839225172996521
+What role does antenatal care play in preventing birth defects?,"Okay, based on the provided text, antenatal care plays a crucial role in preventing birth defects. It’s described as “a healthy 15-month pregnancy” and involves:
+
+*   **Screening and treatment for STIs:** This is mentioned as a key part of antenatal care.
+*   **Screening for HIV and prevention of mother-to-child transmission of HIV:** This is also highlighted as a vital component.
+*   **Screening and treatment for anemia, hookworm, and other infections:** These conditions can lead to birth defects, and antenatal care aims to address them.
+*   **Micronutrient supplementation:** Ensuring adequate intake of vitamins and minerals is also important for preventing birth defects.
+
+Essentially, antenatal care aims to identify and address potential problems early on, significantly reducing the risk of birth defects.
+
+Do you have any follow-up questions about this?","Antenatal care allows for early screening and management of maternal conditions and infections, nutritional counseling, and preventive measures like vaccinations and supplementation, all of which help prevent birth defects.",Prevent_birth_defects_HNN,"['Newborn_Reference_Manual_HNN', 'Newborn_Reference_Manual_HNN', 'midwife_community_who']",0,0.0,0.8212195038795471,0.8824646472930908,0.8507412672042847
+Are genetic factors a major cause of birth defects?,"Yes, genetic factors are a major cause of birth defects. The context states that about one quarter of all congenital anomalies might have a genetic cause (45). It also mentions that more recent estimates suggest the proportion could be higher, as advances in cytogenetic and genetic testing have revealed previously undetected chromosomal abnormalities, gene mutations, and genetic polymorphisms.","Yes, many birth defects have genetic or partially genetic origins. While some are inherited, others result from mutations or environmental exposures during pregnancy.",Prevent_birth_defects_HNN,"['Birth_defects_HNN', 'Birth_defects_HNN', 'Birth_defects_HNN']",0,0.0,0.8474149107933044,0.8865826725959778,0.8665564060211182
+Why are birth defects more common in low-income countries?,"According to the text, birth defects are more common in low-income countries due to a confluence of factors, including:
+
+*   **Limited access to prenatal care:** Routine prenatal care is often inadequate or unavailable, leading to undetected pregnancies.
+*   **Poverty and malnutrition:** Poor maternal nutrition and economic hardship can negatively impact fetal development.
+*   **Lack of access to specialized healthcare:** Limited access to specialized healthcare services, particularly in areas with a shortage of trained professionals, hinders timely diagnosis and treatment.
+*   **Higher birth rates:** Many low-income countries have higher birth rates than developed nations, increasing the overall number of births and, consequently, the risk of birth defects.
+
+Essentially, the combination of these factors creates a challenging environment for ensuring adequate prenatal care and timely intervention, contributing to a higher prevalence of birth defects in these regions."," In low- and middle-income countries, limited access to prenatal care, poor maternal nutrition, inadequate vaccination coverage, and lack of awareness contribute to a higher prevalence of birth defects.",Prevent_birth_defects_HNN,"['Birth_defects_HNN', 'Birth_defects_HNN', 'care_small_newborns_who']",0,0.0,0.8443988561630249,0.9088990688323975,0.875462532043457
+Can fortifying flour with folic acid reduce neural tube defects?,"Yes, fortifying flour with folic acid can significantly reduce the risk of neural tube defects (NTDs) in babies.
+
+According to the evidence from systematic reviews, studies have shown a strong link between folic acid fortification of flour and a decrease in NTD incidence.  Specifically, research indicates that folic acid supplementation, particularly before 36 weeks of pregnancy, can substantially lower the risk of NTDs.
+
+The evidence comes primarily from studies like the one by Lumley et al. (2004) and others, which consistently demonstrate a reduction in NTD prevalence following folic acid fortification.  The NICE guidelines support this, recommending folic acid supplementation for women planning pregnancy, especially those at increased risk.
+
+Essentially, the study by Lumley et al. (2004) highlighted that fortifying flour with folic acid is a key intervention for preventing NTDs.","Yes, fortifying flour with folic acid is a proven public health intervention that significantly lowers the incidence of neural tube defects, such as spina bifida.",Prevent_birth_defects_HNN,"['Standards_Maternal_Neonatal_care_HNN', 'commodities_HNN', 'Maternal_child_nutrition']",0,0.0,0.8501030802726746,0.9030640721321106,0.8757836818695068
+What is the global strategy to address birth defects?,"According to the provided text, the global strategy to address birth defects is multifaceted and involves several key elements:
+
+*   **Monitoring Trends:** Continuously monitoring trends in the prevalence of different types of congenital anomalies among a defined population.
+*   **Detecting Clusters:** Identifying clusters of congenital anomalies (outbreaks) to facilitate rapid response.
+*   **Referral:** Referring affected infants to appropriate services in a timely manner.
+*   **Dissemination of Findings:** Disseminating findings and interpretations to appropriate partner organizations and government agencies.
+
+The text emphasizes that surveillance data is crucial for understanding the burden of congenital anomalies and informing decision-making.","The global strategy focuses on integrating prevention into maternal and child health programs, strengthening health systems, improving surveillance, promoting food fortification, and ensuring vaccination and prenatal screening services.",Prevent_birth_defects_HNN,"['Birth_defects_HNN', 'Birth_defects_HNN', 'Birth_defects_HNN']",0,0.0,0.8002428412437439,0.8569311499595642,0.8276174664497375
