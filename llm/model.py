@@ -1,4 +1,5 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+import torch
 import requests
 from typing import Dict
 import html
@@ -43,7 +44,8 @@ class CustomLLM:
         print(f"🧠 Loading model {model_name}...")
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
-            torch_dtype="auto",
+            # torch_dtype=torch.float16,
+            quantization_config=BitsAndBytesConfig(load_in_8bit=True),
             device_map={"": 0},
             token=os.getenv("HUGGINGFACE_TOKEN", None)
         )

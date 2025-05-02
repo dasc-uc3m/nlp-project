@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Instalar dependencias
 # Install dependencies
-RUN pip install --no-cache-dir transformers flask accelerate sentencepiece protobuf
+RUN pip install --no-cache-dir transformers flask accelerate sentencepiece protobuf bitsandbytes
     # langchain langchain-huggingface langchain-community sentence-transformers langchain-chroma chromadb pypdf huggingface_hub[hf_xet]
 
 # Copiar el código de la aplicación
