@@ -14,6 +14,25 @@ DELETE_CONTEXT_URL = "http://localhost:5002/reset_chatbot"
 MODEL_LIST = ["Gemma 3 1B", "Llama 3.2 1B", "Llama 3.2 3B", "Deepseek R1 Distill Qwen 1.5", "Qwen 2.5 0.5B"]
 LLM_SERVICE_URL = "http://localhost:5001"
 
+# Get current model from LLM service and reorder MODEL_LIST
+try:
+    response = requests.get(f"{LLM_SERVICE_URL}/health")
+    if response.status_code == 200:
+        current_model = response.json().get("model_name", "")
+        # Find the frontend name for the current model
+        for frontend_name, hf_name in {
+            "Gemma 3 1B": "google/gemma-3-1b-it",
+            "Deepseek R1 Distill Qwen 1.5": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+            "Qwen 2.5 0.5B": "Qwen/Qwen2.5-0.5B-Instruct"
+        }.items():
+            if hf_name == current_model:
+                # Reorder MODEL_LIST to put current model first
+                MODEL_LIST.remove(frontend_name)
+                MODEL_LIST.insert(0, frontend_name)
+                break
+except Exception as e:
+    print(f"Error getting current model: {str(e)}")
+
 # ---- Page Config ----
 st.set_page_config(
     page_title="MaternAI",
