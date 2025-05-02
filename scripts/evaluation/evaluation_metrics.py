@@ -40,11 +40,11 @@ vector_db = VectorDB()
 bertscore_metric = evaluate.load("bertscore")
 
 tokenizer = AutoTokenizer.from_pretrained(
-    "meta-llama/Llama-3.2-3B-Instruct",
+    "Qwen/Qwen2.5-0.5B-Instruct",
     token=os.getenv("HUGGINGFACE_TOKEN", None)
 )
 
-output_path = "scripts/evaluation/llama3.2-q_int8/"
+output_path = "scripts/evaluation/qwen/"
 just_time_measurement = False
 
 # Evaluate each row 
@@ -109,7 +109,7 @@ tks_results_df = pd.DataFrame(tks_results)
 
 os.makedirs(output_path, exist_ok=True)
 if len(results) > 0:
-    results_df.to_csv(output_path+"evaluation_results.csv", index=False)
-tks_results_df.to_csv(output_path+"tks_evaluation_results.csv", index=False)
+    results_df.to_csv(output_path+"evaluation_results_2.csv", index=False)
+tks_results_df.to_csv(output_path+"tks_evaluation_results_2.csv", index=False)
 print("Evaluation complete. Results saved to 'evaluation_results.csv'")
 
