@@ -12,16 +12,19 @@ MODEL_MAPPING = {
     "Gemma 3 1B": "google/gemma-3-1b-it",
     "Llama 3.2 1B": "meta-llama/Llama-3.2-1B",
     "Deepseek R1 Distill Qwen 1.5": "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
-    "Qwen 2.5 0.5B": "Qwen/Qwen2.5-0.5B-Instruct"
+    "Qwen 2.5 0.5B": "Qwen/Qwen2.5-0.5B-Instruct",
+    "Llama 3.2 3B": "meta-llama/Llama-3.2-3B-Instruct"
 }
 
 # Initialize with default model
 current_model = os.getenv("MODEL_NAME", "google/gemma-2-2b-it")
 generation_kwargs = json.loads(os.getenv("GENERATION_PARAMETERS", ""))
+torch_dtype = os.getenv("DTYPE", "float32")
 llm = CustomLLM(
     current_model,
     os.getenv("DEVICE", "cuda"),
-    generation_kwargs
+    torch_dtype=torch_dtype,
+    gen_kwargs=generation_kwargs
 )
 
 @app.route('/switch_model', methods=['POST'])

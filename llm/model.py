@@ -25,6 +25,7 @@ class CustomLLM:
         self,
         model_name,
         device,
+        torch_dtype,
         gen_kwargs
     ) -> None:
         self.model_loaded = False
@@ -42,10 +43,20 @@ class CustomLLM:
 
         # Load model
         print(f"🧠 Loading model {model_name}...")
+        if torch_dtype in ["float32", "float16"]:
+            dtype = torch.float32 if torch_dtype == "float32" else torch.float16
+            dtype_config = {"torch_dtype": dtype}
+        elif torch_dtype in ["int8", "int4"]:
+            q_config = BitsAndBytesConfig(load_in_8bit=True) if torch_dtype == "int8" else BitsAndBytesConfig(load_in_4bit=True)
+            dtype_config = {"quantization_config": q_config}
+        else:
+            print(f"Not supported dtype: {torch_dtype}. Defaulting to torch.float32.")
+            dtype_config = {"torch_dtype": torch.float32}
         self.model = AutoModelForCausalLM.from_pretrained(
             self.model_name,
             # torch_dtype=torch.float16,
-            quantization_config=BitsAndBytesConfig(load_in_8bit=True),
+            # quantization_config=BitsAndBytesConfig(load_in_8bit=True),
+            **dtype_config,
             device_map={"": 0},
             token=os.getenv("HUGGINGFACE_TOKEN", None)
         )
