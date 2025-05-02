@@ -49,6 +49,8 @@ class CustomLLM:
         elif torch_dtype in ["int8", "int4"]:
             q_config = BitsAndBytesConfig(load_in_8bit=True) if torch_dtype == "int8" else BitsAndBytesConfig(load_in_4bit=True)
             dtype_config = {"quantization_config": q_config}
+        elif torch_dtype == "auto":
+            dtype_config = {"torch_dtype": "auto"}
         else:
             print(f"Not supported dtype: {torch_dtype}. Defaulting to torch.float32.")
             dtype_config = {"torch_dtype": torch.float32}
