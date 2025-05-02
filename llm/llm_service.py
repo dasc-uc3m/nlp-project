@@ -1,7 +1,7 @@
 import sys
 sys.path.append(".")
 import os
-import yaml
+import json
 from flask import Flask, request, jsonify
 from llm.model import CustomLLM
 
@@ -17,7 +17,7 @@ MODEL_MAPPING = {
 
 # Initialize with default model
 current_model = os.getenv("MODEL_NAME", "google/gemma-2-2b-it")
-generation_kwargs = yaml.safe_load(os.getenv("GENERATION_PARAMETERS", ""))
+generation_kwargs = json.loads(os.getenv("GENERATION_PARAMETERS", ""))
 llm = CustomLLM(
     current_model,
     os.getenv("DEVICE", "cuda"),
