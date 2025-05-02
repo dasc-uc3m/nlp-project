@@ -40,11 +40,11 @@ vector_db = VectorDB()
 bertscore_metric = evaluate.load("bertscore")
 
 tokenizer = AutoTokenizer.from_pretrained(
-    "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+    "meta-llama/Llama-3.2-3B-Instruct",
     token=os.getenv("HUGGINGFACE_TOKEN", None)
 )
 
-output_path = "scripts/evaluation/deepseek/"
+output_path = "scripts/evaluation/llama3.2-q_int8/"
 just_time_measurement = False
 
 # Evaluate each row 
@@ -99,8 +99,8 @@ for idx, row in df.iterrows():
         })
 
     print(f"Succesfully processed query.")
-    if idx == 15:
-        break
+    # if idx == 15:
+    #     break
 
 # Save results 
 if len(results) > 0:
