@@ -43,6 +43,10 @@ class ChatBot:
         except LookupError:
             nltk.download('wordnet')
             
+        try:
+            stopwords("english")
+        except:
+            nltk.download("stopwords")
         self.llm = LocalLLM() # Attribute pointing to the LLM to send messages.
         self.memory = Memory() # Memory object that holds a history of the conversation that has been taken.
 
@@ -52,8 +56,15 @@ class ChatBot:
             print("[WARN] Translator not loaded:", e)
             self.translator = None
             
-        self.ST_MODEL = SentenceTransformer("all-mpnet-base-v2") 
-        self.STOPWORDS_EN = set(stopwords.words("english"))
+        self.ST_MODEL = SentenceTransformer("all-mpnet-base-v2")
+        
+        _stopwords = None
+        try:
+            _stopwords = set(stopwords.words("english"))
+        except:
+            nltk.download("stopwords")
+            _stopwords = set(stopwords.words("english"))
+        self.STOPWORDS_EN = _stopwords
         self.re_ranker = CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')
         
         # Download language detection model
@@ -196,7 +207,7 @@ class ChatBot:
             print(message)
             return message, sources
         
-    def expand_query(self, query_en: str, max_expansions: int = 3, min_sim: float = 0.6) -> list[str]:
+    def expand_query(self, query_en: str, max_expansions: int = 5, min_sim: float = 0.6) -> list[str]:
         """
         1) Detectamos idioma y definimos código OMW + stopwords.
         2) Extraemos tokens y seleccionamos sustantivos/verbo con WordNet OM.
@@ -255,7 +266,7 @@ class ChatBot:
                 pass
         return text
     
-    def retrieve_context_from_db_with_reranking(self, query: str, vector_db: VectorDB, k_initial: int = 3, k_final: int = 5):
+    def retrieve_context_from_db_with_reranking(self, query: str, vector_db: VectorDB, k_initial: int = 5, k_final: int = 3):
         
         query_en = self.translate_to_english(query)
         expanded_queries = self.expand_query(query_en)
@@ -285,15 +296,20 @@ class ChatBot:
         ranked = [chunk for _, chunk in sorted(zip(scores, candidates), key=lambda x: x[0], reverse=True)]
         topk = ranked[:k_final]
 
-        context_pieces = [c["content"] for c in topk]
-        sources = [c["source"] for c in topk]
-        final_context = "\n\n".join(context_pieces)
+        joined_chunks = []
+        for doc in topk:
+            joined_chunks.append(vector_db._search_nearby_chunks(doc, 4))
+        final_context = "\n\n---\n\n".join(joined_chunks)
+
+        # context_pieces = [c["content"] for c in topk]
+        # # sources = [c["source"] for c in topk]
+        # final_context = "\n\n".join(context_pieces)
 
         self.initialize_context(final_context)
-        self.current_sources = sources
+        self.current_sources = topk
 
         print("Successfully loaded context after re-ranking.")
-        return final_context, sources
+        return final_context, topk  
 
     def __call__(self, message: str):
         self.infer(message=message)

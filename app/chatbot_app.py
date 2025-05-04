@@ -125,9 +125,12 @@ def create_app():
             if not app.chatbot.has_context():
                 # Retrieve fresh context for the latest message if it isn't loaded yet.
                 print(f"DEBUG - Retrieving context for query: {latest_message}")
-                app.chatbot.retrieve_context_from_db(latest_message, app.vector_db)
+
+                # A method has been developed with query expansion and reranking. If you want to try it
+                # you can check by changing this method by chatbot.retrieve_context_from_db_with_reranking().
+                app.chatbot.retrieve_context_from_db_with_reranking(latest_message, app.vector_db)
             
-            answer, sources = app.chatbot.infer(latest_message, expand=False)
+            answer, sources = app.chatbot.infer(latest_message)
             print(f"DEBUG - Sources from chatbot: {sources}")
             return jsonify({
                 "response": answer,

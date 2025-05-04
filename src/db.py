@@ -54,14 +54,18 @@ class VectorDB:
             
             source_info = {
                 "source": source_filename,
-                "content": doc.page_content[:500] + "..."  # Preview of content
+                "content": doc.page_content[:500] + "...",  # Preview of content
+                "metadata": doc.metadata
             }
             sources.append(source_info)
             
         return context, sources
 
     def _search_nearby_chunks(self, doc, window):
-        source_doc = doc.metadata["source"]
+        if hasattr(doc, "metadata"):
+            source_doc = doc.metadata["source"]
+        else:
+            source_doc = doc["metadata"]["source"]
         # Get every chunk of the same pdf document.
         all_chunks = self.vector_store.get(where={"source": source_doc})
 
@@ -92,7 +96,10 @@ class VectorDB:
         chunk_data.sort(key=lambda x: x[0])
 
         # Get the current chunk's index
-        current_chunk_idx = float(doc.metadata.get("chunk_idx", 0))
+        if hasattr(doc, "metadata"):
+            current_chunk_idx = float(doc.metadata.get("chunk_idx", 0))
+        else:
+            current_chunk_idx = float(doc["metadata"].get("chunk_idx", 0))
         
         nearby_chunks = []
         target_indices = set(range(int(current_chunk_idx - window), int(current_chunk_idx + window + 1)))
