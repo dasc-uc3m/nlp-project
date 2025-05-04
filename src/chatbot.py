@@ -301,10 +301,6 @@ class ChatBot:
             joined_chunks.append(vector_db._search_nearby_chunks(doc, 4))
         final_context = "\n\n---\n\n".join(joined_chunks)
 
-        # context_pieces = [c["content"] for c in topk]
-        # # sources = [c["source"] for c in topk]
-        # final_context = "\n\n".join(context_pieces)
-
         self.initialize_context(final_context)
         self.current_sources = topk
 
