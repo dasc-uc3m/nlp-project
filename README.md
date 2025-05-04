@@ -45,6 +45,18 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+For launching automatically this application, a bash file (Linux) has been provided that runs automatically the different parts of this project.
+To run it, first open `run.sh` and substitute the path to your virtual environment in the variable called `VENV_PATH`. Then run `bash ./run.sh`.
+
+If your virtual environment is handled through `conda` or you are using windows or MAC, you should run manually the different parts. In this case, follow these steps:
+
+1. Go to the root path of this repository.
+2. Make sure that you have activated your virtual environment.
+3. Run `docker compose up --build` to launch the local LLM.
+4. Open a new terminal and repeat steps 1 and 2. Then run `python3 app/chatbot_app.py` to launch the Flask API that communicates with the backend of the project.
+5. Open (again) a new terminal and repeat steps 1 and 2. Then run `streamlit run ui/streamlit_app.py` to launch the frontend. A window should automatically open.
+
+## Frontend
 
 To launch the user interface, run:
 ```sh
