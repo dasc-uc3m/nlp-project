@@ -254,31 +254,156 @@ with tab2:
             st.error(f"Error fetching documents: {response.json().get('error', 'Unknown error')}")
     except Exception as e:
         st.error(f"Error connecting to backend: {str(e)}")
+        
+        
 
 # ---- Model Comparison Tab ----
 with tab3:
-    st.header("Model Comparison Report - Example - Not our real data yet")
+    st.header("Model Comparison Report")
     st.markdown("""
-    Compare how different AI models respond to the same medical questions.  
-    
-    We should ADD BERT SCORE, ROUGE etc...
+    This section presents a comparison of AI models based on key metrics.
+    Charts show average performance, while the table includes standard deviation.
+    - **Retrieval metrics**: Recall@3, MRR
+    - **BERTScore**: Precision, Recall, F1
+    - **Generation speed**: Tokens/sec
     """)
 
+    # --- Data Preparation ---
+
+    # Model performance data (means)
     data = pd.DataFrame({
-        "Model": ["Qwen", "Gemma", "Llama-3"],
-        "Accuracy": ["?", "?", "?"],
-        "Fluency": ["?", "?", "?"],
-        "Relevance": ["?", "?", "?"]
+        "Model": [
+            "Gemma-3-1b-it",
+            "Qwen2.5-0.5B-Instruct",
+            "DeepSeek-R1-Distill-Qwen-1.5B",
+            "Llama-3.2-1B"
+        ],
+        "Short Name": ["Gemma-3", "Qwen2.5", "DeepSeek", "Llama-3.2"],
+        "Recall@3": [0.558, 0.558, 0.558, 0.558],
+        "MRR": [0.488, 0.488, 0.488, 0.488],
+        "BS_P": [0.848, 0.835, 0.831, 0.875],
+        "BS_R": [0.888, 0.890, 0.880, 0.894],
+        "BS_F1": [0.867, 0.864, 0.854, 0.882],
+        "Tokens/sec": [43.53, 67.13, 22.63, 32.24]
     })
 
-    st.dataframe(data, use_container_width=True)
+    # Standard deviation data
+    std_data = pd.DataFrame({
+        "Model": [
+            "Gemma-3-1b-it",
+            "Qwen2.5-0.5B-Instruct",
+            "DeepSeek-R1-Distill-Qwen-1.5B",
+            "Llama-3.2-1B"
+        ],
+        "BS_P_std": [0.032, 0.019, 0.028, 0.031],
+        "BS_R_std": [0.022, 0.021, 0.026, 0.025],
+        "BS_F1_std": [0.024, 0.020, 0.024, 0.020],
+        "Tokens/sec_std": [5.65, 18.37, 8.40, 2.31]
+    })
 
-    chart = alt.Chart(data).mark_bar().encode(
-        x=alt.X('Model', sort=None),
-        y='Accuracy',
-        color='Model'
-    ).properties(title="Accuracy by Model")
-    st.altair_chart(chart, use_container_width=True)
+   
+    merged_data = pd.merge(data, std_data, on="Model", how="left")
+
+
+    st.subheader("📊 Performance Charts")
+    
+    st.markdown("##### Retrieval Metrics")
+    retrieval_chart_data = merged_data.set_index('Short Name')[['Recall@3', 'MRR']]
+    st.bar_chart(retrieval_chart_data, height=300, use_container_width=True, stack=False) 
+
+    st.markdown("##### Generation Speed")
+    speed_chart_data = merged_data.set_index('Short Name')[['Tokens/sec']]
+    st.bar_chart(speed_chart_data, height=300, use_container_width=True)
+
+    st.markdown("##### BERTScore")
+    
+    bert_chart_data = merged_data.set_index('Short Name')[['BS_P', 'BS_R', 'BS_F1']]
+    bert_chart_data.columns = ['Precision', 'Recall', 'F1 Score']
+    st.bar_chart(bert_chart_data, height=300, use_container_width=True, stack=False)
+
+
+    st.subheader("🔍 Detailed Performance Metrics")
+
+
+    display_columns_ordered = [
+        'Model', 'Short Name', 'Recall@3', 'MRR',
+        'BS_P', 'BS_P_std', 'BS_R', 'BS_R_std', 'BS_F1', 'BS_F1_std',
+        'Tokens/sec', 'Tokens/sec_std'
+    ]
+    display_data = merged_data[display_columns_ordered].copy()
+
+    rename_map = {
+        'BS_P': 'BS Precision', 'BS_P_std': 'BS Precision Std Dev',
+        'BS_R': 'BS Recall', 'BS_R_std': 'BS Recall Std Dev',
+        'BS_F1': 'BS F1', 'BS_F1_std': 'BS F1 Std Dev',
+        'Tokens/sec': 'Avg Tokens/sec', 'Tokens/sec_std': 'Tokens/sec Std Dev'
+    }
+    display_data = display_data.rename(columns=rename_map)
+
+
+    columns_to_highlight = [
+        'Recall@3', 'MRR', 'BS Precision', 'BS Recall', 'BS F1', 'Avg Tokens/sec'
+    ]
+
+    highlight_style = 'background-color: lightgreen; font-weight: bold;'
+
+    styler = display_data.style.highlight_max(
+        subset=columns_to_highlight,
+        axis=0, # axis=0 highlights the max in each column
+        props=highlight_style
+    ).format(
+    
+        {
+            'Recall@3': "{:.3f}",
+            'MRR': "{:.3f}",
+            'BS Precision': "{:.3f}",
+            'BS Precision Std Dev': "{:.3f}",
+            'BS Recall': "{:.3f}",
+            'BS Recall Std Dev': "{:.3f}",
+            'BS F1': "{:.3f}",
+            'BS F1 Std Dev': "{:.3f}",
+            'Avg Tokens/sec': "{:.2f}",
+            'Tokens/sec Std Dev': "{:.2f}"
+        }
+    )
+
+    # Display the styled DataFrame
+    st.dataframe(
+        styler, # Pass the Styler object instead of the raw DataFrame
+        use_container_width=True,
+        hide_index=True
+    )
+    
+    
+
+    with st.expander("💡 Key Insights", expanded=True):
+        fastest_model_idx = merged_data['Tokens/sec'].idxmax()
+        best_bertscore_p_idx = merged_data['BS_P'].idxmax()
+        best_bertscore_r_idx = merged_data['BS_R'].idxmax()
+        best_bertscore_f1_idx = merged_data['BS_F1'].idxmax()
+
+        fastest_model = merged_data.loc[fastest_model_idx]
+        best_bertscore_p_model = merged_data.loc[best_bertscore_p_idx]
+        best_bertscore_r_model = merged_data.loc[best_bertscore_r_idx]
+        best_bertscore_f1_model = merged_data.loc[best_bertscore_f1_idx]
+
+        st.markdown(f"""
+        - **Speed Champion**: **{fastest_model['Short Name']}**
+          (Avg: {fastest_model['Tokens/sec']:.1f} ± {fastest_model['Tokens/sec_std']:.1f} tokens/sec)
+        - **BERTScore Leaders**:
+          - Precision: **{best_bertscore_p_model['Short Name']}** (Avg: {best_bertscore_p_model['BS_P']:.3f} ± {best_bertscore_p_model['BS_P_std']:.3f})
+          - Recall: **{best_bertscore_r_model['Short Name']}** (Avg: {best_bertscore_r_model['BS_R']:.3f} ± {best_bertscore_r_model['BS_R_std']:.3f})
+          - F1: **{best_bertscore_f1_model['Short Name']}** (Avg: {best_bertscore_f1_model['BS_F1']:.3f} ± {best_bertscore_f1_model['BS_F1_std']:.3f})
+        - **Retrieval Performance**: All models currently show identical average retrieval metrics
+          (Recall@3: {merged_data['Recall@3'].iloc[0]:.3f}, MRR: {merged_data['MRR'].iloc[0]:.3f}).
+        - **Trade-offs**: Consider the balance between generation speed (where **{fastest_model['Short Name']}** excels)
+          and generation quality/similarity (where **{best_bertscore_f1_model['Short Name']}** leads in F1 score)
+          based on specific application needs. Standard deviations in the table show result variability.
+        """)
+
+
+# ---- About Tab ----
+
 
 with tab4:
     st.header("About this Project")
