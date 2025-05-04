@@ -1,30 +1,47 @@
+# Import required libraries
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 
+# Class to handle vector database logic
 class VectorDB:
     def __init__(self, persist_directory = "db"):
+        """
+        Initialize the vector store with:
+        - a persistence directory to save vectors
+        - a sentence-transformer model for embedding
+        - a Chroma store to persist vectorized documents
+        - a text splitter to chunk text
+        """
         self.persist_directory = persist_directory
         self.embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
         
         os.makedirs(self.persist_directory, exist_ok = True )
         
+        # Create or load the vector store from the given directory
         self.vector_store = Chroma(
             collection_name="example_collection",
             embedding_function=self.embeddings, 
             persist_directory = self.persist_directory
         )
+        # Split long text into overlapping chunks
         self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     
     def upload_document(self, path_to_single_document):
+        """
+        Load a single PDF document, split it into chunks, and add them to the vector store.
+        Adds 'chunk_idx' metadata to each chunk for tracking and reordering.
+        """
         loader = PyPDFLoader(path_to_single_document, mode="single")
         try:
             documents = loader.load()
         except Exception as e:
             print(f"Document: {path_to_single_document} couldn't be generated.\nError: {e}.\n\n")
             return None
+        
+        # Split the document into chunks
         docs = self.text_splitter.split_documents(documents)
 
         for idx, doc in enumerate(docs):
@@ -35,10 +52,17 @@ class VectorDB:
             self.vector_store.add_documents(docs)
         
     def upload_documents(self, documents_paths):
+        """
+        Upload multiple PDF documents from a given folder.
+        """
         for path in os.listdir(documents_paths):
             self.upload_document(os.path.join(documents_paths, path))
             
     def retrieve_context(self, query, k=3, chunk_window_size=4):
+        """
+        Retrieve top-k most relevant chunks for the query, and expand them with nearby chunks.
+        Also return a short source preview for reference.
+        """
         docs = self.vector_store.similarity_search(query, k=k)
         joined_chunks = []
         for doc in docs:
@@ -62,6 +86,10 @@ class VectorDB:
         return context, sources
 
     def _search_nearby_chunks(self, doc, window):
+        """
+        Given a document chunk, find nearby chunks in the same PDF file (based on chunk_idx).
+        This helps preserve context that might have been split.
+        """
         if hasattr(doc, "metadata"):
             source_doc = doc.metadata["source"]
         else:
@@ -116,7 +144,9 @@ class VectorDB:
         return joined_text
 
     def list_documents(self):
-        """List all documents in the vector store"""
+        """
+        List all unique source documents currently stored in the vector database.
+        """
         try:
             # Get all documents and their metadata
             results = self.vector_store.get()
@@ -135,7 +165,9 @@ class VectorDB:
             return []
 
     def delete_document(self, filename):
-        """Delete a document and all its chunks from the vector store"""
+        """
+        Delete all chunks belonging to a specific document by filename.
+        """
         try:
             print(f"DEBUG - Starting deletion for filename: {filename}")
             # Get all documents and their metadata

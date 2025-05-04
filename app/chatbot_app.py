@@ -7,22 +7,20 @@ from src.db import VectorDB
 import glob
 
 
-# changes from before:
-#     - now we have an application factory function create_app() - apparently its better for some stuff like starting up the document ingestion beforehand d
-
-# Configuration
-DOCUMENTS_DIR = "data"  
-DOCUMENT_EXTENSIONS = ["*.pdf"]  
-
-# def load_initial_documents():
-#     """Load all documents from the documents directory"""
-#     documents = []
-#     for ext in DOCUMENT_EXTENSIONS:
-#         documents.extend(glob.glob(os.path.join(DOCUMENTS_DIR, ext)))
-#     return documents
+DOCUMENTS_DIR = "data"  # Folder where the PDFs are stored
+DOCUMENT_EXTENSIONS = ["*.pdf"]  # Supported document extensions
 
 def create_app():
-    """Application factory function"""
+    """
+    Factory function that creates and configures the Flask app.
+    
+    - Initializes ChatBot and VectorDB instances.
+    - Loads documents into the vector store (if not already loaded).
+    - Defines the available API routes for document upload, inference, listing, deletion, etc.
+    
+    Returns:
+        Flask app instance
+    """
     app = Flask(__name__)
     
     # Initialize chatbot and vector_db
@@ -42,37 +40,19 @@ def create_app():
     else:
         print(f"Using existing collection with {collection_size} documents")
         app.chatbot.retrieve_context_from_db("general context", app.vector_db)
-
+        
+    # Unset the context to leave the chatbot "clean"
     app.chatbot.remove_context()
 
-    # Why this is here!!
-    #These are flask routes, they can be used later in our streamlit app to allow us to directly use this from the frontend. right now, we are not using this
+    # These are flask routes, they can be used later in our streamlit app to allow us to directly use this from the frontend. right now, we are not using this
     # All backend logic is done in src inside wither chatbot or vector db. These are routes and we are only pointing the streamlit app to /infer on port 5002 
     
-    
-    # @app.route("/refresh_documents", methods=["POST"])
-    # def refresh_documents():
-    #     try:
-    #         documents = glob.glob("data/*.pdf")
-    #         for doc in documents:
-    #             app.vector_db.upload_document(doc)
-    #         # Update chatbot context after refresh
-    #         app.chatbot.retrieve_context_from_db("general context", app.vector_db)
-    #         return jsonify({"message": "Documents refreshed successfully"})
-    #     except Exception as e:
-    #         return jsonify({"error": str(e)}), 500
-
-    # @app.route("/search_document", methods=["POST"])
-    # def search_for_documents():
-    #     data = request.data.decode("utf-8")
-    #     result, sources = app.chatbot.retrieve_context_from_db(data, app.vector_db)
-    #     return jsonify({
-    #         "message": result,
-    #         "sources": sources
-    #     })
-
     @app.route("/upload", methods=["POST"])
     def upload_document():
+        """
+        Route: POST /upload
+        Allows the user to upload a PDF document which is processed and added to the vector store.
+        """
         try:
             if "file" not in request.files:
                 return jsonify({"error": "No file provided"}), 400
@@ -106,6 +86,11 @@ def create_app():
 
     @app.route("/infer", methods=["POST"])
     def infer_with_chatbot():
+        """
+        Route: POST /infer
+        Takes a list of chat messages (from frontend), reconstructs conversation,
+        retrieves context, and returns the chatbot's response.
+        """
         try:
             payload = request.get_json()
             messages = payload["messages"]
@@ -121,13 +106,10 @@ def create_app():
                         user_msg = msg["content"]
                     else:
                         app.chatbot.memory.update_memory(user_msg, msg["content"])
-            
+                        
+            # Retrieve fresh context for the latest query if it isn't loaded yet.
             if not app.chatbot.has_context():
-                # Retrieve fresh context for the latest message if it isn't loaded yet.
                 print(f"DEBUG - Retrieving context for query: {latest_message}")
-
-                # A method has been developed with query expansion and reranking. If you want to try it
-                # you can check by changing this method by chatbot.retrieve_context_from_db_with_reranking().
                 app.chatbot.retrieve_context_from_db_with_reranking(latest_message, app.vector_db)
             
             answer, sources = app.chatbot.infer(latest_message)
@@ -143,6 +125,10 @@ def create_app():
 
     @app.route("/list_documents", methods=["GET"])
     def list_documents():
+        """
+        Route: GET /list_documents
+        Returns a list of all loaded document filenames in the vector store.
+        """
         try:
             documents = app.vector_db.list_documents()
             return jsonify({"documents": documents})
@@ -152,6 +138,10 @@ def create_app():
 
     @app.route("/delete_document", methods=["DELETE", "POST"])
     def delete_document():
+        """
+        Route: DELETE or POST /delete_document
+        Removes a document and all its vectorized chunks from the store based on its filename.
+        """
         try:
             data = request.get_json()
             filename = data.get("filename")
@@ -159,7 +149,7 @@ def create_app():
             if not filename:
                 return jsonify({"error": "No filename provided"}), 400
             
-            print(f"DEBUG - Attempting to delete document: {filename}")  # Add debug log
+            print(f"DEBUG - Attempting to delete document: {filename}")
             success = app.vector_db.delete_document(filename)
             
             if success:
@@ -173,6 +163,10 @@ def create_app():
 
     @app.route("/remove_context", methods=["DELETE", "POST"])
     def remove_context():
+        """
+        Route: DELETE or POST /remove_context
+        Removes the current context loaded into the chatbot.
+        """
         if app.chatbot.has_context():
             app.chatbot.remove_context()
             return jsonify({"message": "Context deleted succesfully"}), 200
@@ -181,6 +175,10 @@ def create_app():
         
     @app.route("/reset_chatbot", methods=["DELETE", "POST"])
     def reset_chatbot():
+        """
+        Route: DELETE or POST /reset_chatbot
+        Resets the chatbot's context and memory to default empty state.
+        """
         if app.chatbot.has_context():
             app.chatbot.remove_context()
         app.chatbot.memory.reset_memory()

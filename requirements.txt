@@ -13,3 +13,4 @@ nltk
 sentence-transformers
 streamlit
 langdetect
+deep_translator

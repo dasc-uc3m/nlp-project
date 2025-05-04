@@ -14,3 +14,4 @@ matplotlib
 seaborn
 evaluate
 pandas
+deep_translator
