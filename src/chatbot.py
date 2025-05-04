@@ -1,20 +1,15 @@
+# Import libraries
 import sys
 sys.path.append(".")
-
-import requests
-import html
-from typing import Dict
 from src.db import VectorDB
-
 from llm.model import LocalLLM
-
 import nltk
 from nltk.corpus import wordnet, stopwords
 from sentence_transformers import SentenceTransformer, util
 from sentence_transformers import CrossEncoder
 from deep_translator import GoogleTranslator
 
-
+# Memory class to store and manage the chat history
 class Memory:
     def __init__(self, max_messages_count=10):
         self._memory = []
@@ -34,37 +29,41 @@ class Memory:
     def history(self):
         return self._memory[-self.max_messages_count:]
 
-
+# Main chatbot class
 class ChatBot:
     def __init__(self):
-        
-        try: # To ensure WordNet is available
+        # Ensure WordNet and stopwords are available
+        try:
             wordnet.synsets('test')
         except LookupError:
             nltk.download('wordnet')
-            
         try:
             stopwords("english")
         except:
             nltk.download("stopwords")
+            
         self.llm = LocalLLM() # Attribute pointing to the LLM to send messages.
         self.memory = Memory() # Memory object that holds a history of the conversation that has been taken.
 
+        # Translator (auto to English)
         try:
             self.translator = GoogleTranslator(source='auto', target='en')
         except Exception as e:
             print("[WARN] Translator not loaded:", e)
             self.translator = None
-            
+        
+        # Sentence embedding model
         self.ST_MODEL = SentenceTransformer("all-mpnet-base-v2")
         
-        _stopwords = None
+        # Load English stopwords
         try:
             _stopwords = set(stopwords.words("english"))
         except:
             nltk.download("stopwords")
             _stopwords = set(stopwords.words("english"))
         self.STOPWORDS_EN = _stopwords
+        
+        # CrossEncoder model for re-ranking
         self.re_ranker = CrossEncoder('cross-encoder/mmarco-mMiniLMv2-L12-H384-v1')
         
         # Download language detection model
@@ -142,7 +141,6 @@ class ChatBot:
         list[dict]
             List of messages following the chat template defined by huggingface.
         """
-
         messages = [
             # We add the system prompt message.
             {"role": "system", "content": self.system_prompt},
@@ -164,7 +162,15 @@ class ChatBot:
         return messages
 
     def infer(self, message: str):
-        
+        """
+        Sends the user message to the LLM along with system prompt, context and memory.
+
+        Parameters:
+            message (str): User input.
+
+        Returns:
+            Tuple[str, list]: The model's response and the current sources used.
+        """
         # Detect language of the message
         try:
             detected_lang = self.detect_language(message)
@@ -172,7 +178,7 @@ class ChatBot:
             message_with_lang = f"[LANGUAGE: {detected_lang.upper()}] {message}"
         except:
             message_with_lang = message
- 
+
         # If ChatBot has no attribute "context" (context hasn't been provided) it prints an error and returns an empty string.
         if not hasattr(self, "context"):
             prompt = [
@@ -196,24 +202,39 @@ class ChatBot:
         return answer, sources
     
     def retrieve_context_from_db(self, query, vector_db: VectorDB, k=3):
-            context, sources = vector_db.retrieve_context(query, k=k)
-            if len(context) > 0:
-                self.initialize_context(context=context)
-                self.current_sources = sources  # Store sources for later use
-                message = "Successfully loaded context."
-            else:
-                message = "No context found in the Database."
-                self.current_sources = []
-            print(message)
-            return message, sources
-        
-    def expand_query(self, query_en: str, max_expansions: int = 5, min_sim: float = 0.6) -> list[str]:
         """
-        1) Detectamos idioma y definimos código OMW + stopwords.
-        2) Extraemos tokens y seleccionamos sustantivos/verbo con WordNet OM.
-        3) Construimos variantes usando solo el primer synset.
-        4) Filtramos/ordenamos esas variantes por similitud de embeddings
-        5) Devolvemos up to max_expansions.
+        Retrieves relevant context chunks from the vector DB.
+
+        Parameters:
+            query (str): User query.
+            vector_db (VectorDB): The vector database object.
+            k (int): Number of top-k chunks to retrieve.
+
+        Returns:
+            Tuple[str, list]: Context string and list of sources.
+        """
+        context, sources = vector_db.retrieve_context(query, k=k)
+        if len(context) > 0:
+            self.initialize_context(context=context)
+            self.current_sources = sources  # Store sources for later use
+            message = "Successfully loaded context."
+        else:
+            message = "No context found in the Database."
+            self.current_sources = []
+        print(message)
+        return message, sources
+        
+    def expand_query(self, query_en: str, max_expansions: int = 5, min_sim: float = 0.7) -> list[str]:
+        """
+        Expands a query using synonyms from WordNet and filters them based on cosine similarity.
+
+        Parameters:
+            query_en (str): Query in English.
+            max_expansions (int): Max number of expansions to return.
+            min_sim (float): Minimum cosine similarity threshold.
+
+        Returns:
+            list[str]: Top similar expansions of the query.
         """
         STOP = self.STOPWORDS_EN
         tokens = [t.strip(".,¡¿?;:()[]").lower() for t in query_en.split()]
@@ -259,6 +280,7 @@ class ChatBot:
         return final
     
     def translate_to_english(self, text: str) -> str:
+        """Translates any input text to English using GoogleTranslator."""
         if self.translator:
             try:
                 return self.translator.translate(text)
@@ -267,7 +289,18 @@ class ChatBot:
         return text
     
     def retrieve_context_from_db_with_reranking(self, query: str, vector_db: VectorDB, k_initial: int = 5, k_final: int = 3):
-        
+        """
+        Expands and reranks context chunks for a query using semantic similarity.
+
+        Parameters:
+            query (str): Original user query.
+            vector_db (VectorDB): Vector store object.
+            k_initial (int): Chunks to retrieve per expansion.
+            k_final (int): Final chunks to keep after reranking.
+
+        Returns:
+            Tuple[str, list]: Final context and selected top documents.
+        """
         query_en = self.translate_to_english(query)
         expanded_queries = self.expand_query(query_en)
 
